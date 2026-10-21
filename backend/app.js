@@ -1,12 +1,13 @@
-
 const express = require("express")
-const app = express()
-const cors = require('cors');
+const cors = require("cors")
 
-const gearRoutes = require("./Routes/gearRoutes")
+const app = express()
 
 app.use(cors())
 app.use(express.json())
-app.use("/api/gears", gearRoutes)
+
+app.get("/", (req, res) => {
+    res.status(200).json({ message: "API is running" })
+})
 
 module.exports = app
