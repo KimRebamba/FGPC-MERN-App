@@ -43,12 +43,12 @@ const addressSchema = new Schema({
 const userSchema = new Schema({
     firstName: {
         type: String,
-        required: true,
+        default: "",
         trim: true
     },
     lastName: {
         type: String,
-        required: true,
+        default: "",
         trim: true
     },
     email: {

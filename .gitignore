@@ -12,6 +12,8 @@ node_modules/
 .env.*
 !.env.example
 !.env.sample
+serviceAccountKey.json
+**/serviceAccountKey.json
 
 # ==========================================
 # Build outputs
@@ -83,3 +85,7 @@ test-results/
 # ==========================================
 .autoclaw/
 .claw/
+.zwork/
+
+.prof-code/
+.tmp/

@@ -1,5 +1,6 @@
 const bcrypt = require("bcryptjs")
 const User = require("../Models/User")
+const { toSafeUser } = require("../utils/safeUser")
 const { isValidId, pickFields, sendError } = require("../utils/http")
 
 const editableFields = [
@@ -13,14 +14,6 @@ const editableFields = [
     "isDeactivated",
     "emailVerifiedAt"
 ]
-
-const hidePassword = (user) => {
-    const output = user.toObject()
-
-    delete output.password
-
-    return output
-}
 
 const getUsers = async (req, res) => {
     try {
@@ -81,7 +74,7 @@ const createUser = async (req, res) => {
 
         const user = await User.create(details)
 
-        res.status(201).json(hidePassword(user))
+        res.status(201).json(toSafeUser(user))
     } catch (error) {
         sendError(res, error)
     }
@@ -115,7 +108,7 @@ const updateUser = async (req, res) => {
             return res.status(404).json({ error: "User not found" })
         }
 
-        res.status(200).json(hidePassword(user))
+        res.status(200).json(toSafeUser(user))
     } catch (error) {
         sendError(res, error)
     }
@@ -139,7 +132,7 @@ const deleteUser = async (req, res) => {
             return res.status(404).json({ error: "User not found" })
         }
 
-        res.status(200).json({ message: "User deleted", user: hidePassword(user) })
+        res.status(200).json({ message: "User deleted", user: toSafeUser(user) })
     } catch (error) {
         sendError(res, error)
     }

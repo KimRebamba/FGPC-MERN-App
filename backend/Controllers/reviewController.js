@@ -23,6 +23,7 @@ const getReviews = async (req, res) => {
 
         const reviews = await Review.find(filter)
             .populate("user", "firstName lastName")
+            .populate("product", "name")
             .sort({ createdAt: -1 })
 
         res.status(200).json({ count: reviews.length, reviews })
@@ -41,6 +42,7 @@ const getReview = async (req, res) => {
 
         const review = await Review.findOne({ _id: id, deletedAt: null })
             .populate("user", "firstName lastName")
+            .populate("product", "name")
 
         if (!review) {
             return res.status(404).json({ error: "Review not found" })

@@ -13,6 +13,19 @@ const readQuantity = (value, fallback) => {
     return Number.isInteger(quantity) && quantity >= 1 ? quantity : null
 }
 
+const getCarts = async (req, res) => {
+    try {
+        const carts = await Cart.find({ deletedAt: null })
+            .populate("user", "firstName lastName email")
+            .populate(populatedProduct)
+            .sort({ updatedAt: -1 })
+
+        res.status(200).json({ count: carts.length, carts })
+    } catch (error) {
+        sendError(res, error)
+    }
+}
+
 const getCart = async (req, res) => {
     try {
         const { userId } = req.params
@@ -178,6 +191,7 @@ const clearCart = async (req, res) => {
 }
 
 module.exports = {
+    getCarts,
     getCart,
     addCartItem,
     updateCartItemQuantity,
