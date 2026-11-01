@@ -3,7 +3,53 @@ import { useSelector } from "react-redux"
 import { Link } from "react-router-dom"
 import Loader from "../Layout/Loader"
 import { formatDate } from "../../utils/formatDate"
+import { resolveImageUrl } from "../../utils/resolveImageUrl"
 import api from "../../api/axiosClient"
+
+const AvatarCircle = ({ user, size = 42, fallbackInitial = "U", isAdmin = false }) => {
+    const avatarUrl = user?.profilePath ? resolveImageUrl(user.profilePath) : null
+    const initial = (user?.firstName?.[0] || user?.lastName?.[0] || fallbackInitial || "U").toUpperCase()
+
+    if (avatarUrl) {
+        return (
+            <img
+                src={avatarUrl}
+                alt={user?.firstName || "Avatar"}
+                style={{
+                    width: `${size}px`,
+                    height: `${size}px`,
+                    borderRadius: "50%",
+                    objectFit: "cover",
+                    border: isAdmin ? "2px solid var(--accent)" : "1.5px solid #333",
+                    flexShrink: 0,
+                    display: "block"
+                }}
+            />
+        )
+    }
+
+    return (
+        <div
+            style={{
+                width: `${size}px`,
+                height: `${size}px`,
+                borderRadius: "50%",
+                background: isAdmin ? "rgba(198, 255, 0, 0.15)" : "#222",
+                color: isAdmin ? "var(--accent)" : "#fff",
+                border: isAdmin ? "1.5px solid var(--accent)" : "1.5px solid #333",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontWeight: 700,
+                fontSize: `${Math.max(12, Math.round(size * 0.42))}px`,
+                flexShrink: 0,
+                textTransform: "uppercase"
+            }}
+        >
+            {initial}
+        </div>
+    )
+}
 
 const Stars = ({ rating, max = 5 }) => {
     const stars = []
@@ -48,14 +94,17 @@ const ReviewItem = ({ review, currentUser, onReplySubmitted }) => {
 
     return (
         <li className="review-item">
-            <div className="review-header">
-                <div className="review-author-info">
-                    <span className="review-author">
-                        {review.user
-                            ? (review.user.firstName + " " + review.user.lastName).trim()
-                            : "Customer"}
-                    </span>
-                    <span className="review-date">{formatDate(review.createdAt)}</span>
+            <div className="review-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "14px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+                    <AvatarCircle user={review.user} size={44} fallbackInitial="C" />
+                    <div className="review-author-info">
+                        <span className="review-author">
+                            {review.user
+                                ? (review.user.firstName + " " + review.user.lastName).trim()
+                                : "Customer"}
+                        </span>
+                        <span className="review-date">{formatDate(review.createdAt)}</span>
+                    </div>
                 </div>
 
                 <div className="review-rating">
@@ -89,14 +138,15 @@ const ReviewItem = ({ review, currentUser, onReplySubmitted }) => {
                                 key={reply._id || idx}
                                 className={`review-reply-item ${isAdmin ? "review-reply-item--admin" : ""}`}
                             >
-                                <div className="review-reply-header">
+                                <div className="review-reply-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
                                     <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
+                                        <AvatarCircle user={author} size={30} fallbackInitial={isAdmin ? "A" : "U"} isAdmin={isAdmin} />
                                         <span style={{ fontWeight: 600, color: "var(--text)", fontSize: "16px" }}>
                                             {authorName}
                                         </span>
                                         {isAdmin ? (
                                             <span className="review-reply-badge review-reply-badge--admin">
-                                                🛡️ Official Admin Response
+                                                🛡️ Admin
                                             </span>
                                         ) : (
                                             <span className="review-reply-badge review-reply-badge--customer">

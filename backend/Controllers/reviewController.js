@@ -64,7 +64,7 @@ const getReviews = async (req, res) => {
         const reviews = await Review.find(filter)
             .populate("user", "firstName lastName profilePath")
             .populate("product", "name")
-            .populate("replies.authorId", "firstName lastName role")
+            .populate("replies.authorId", "firstName lastName role profilePath")
             .sort({ createdAt: -1 })
 
         res.status(200).json({ count: reviews.length, reviews })
@@ -84,7 +84,7 @@ const getReview = async (req, res) => {
         const review = await Review.findOne({ _id: id, deletedAt: null })
             .populate("user", "firstName lastName profilePath")
             .populate("product", "name")
-            .populate("replies.authorId", "firstName lastName role")
+            .populate("replies.authorId", "firstName lastName role profilePath")
 
         if (!review) {
             return res.status(404).json({ error: "Review not found" })
@@ -195,7 +195,7 @@ const updateReview = async (req, res) => {
         )
             .populate("user", "firstName lastName profilePath")
             .populate("product", "name")
-            .populate("replies.authorId", "firstName lastName role")
+            .populate("replies.authorId", "firstName lastName role profilePath")
 
         res.status(200).json(review)
     } catch (error) {
@@ -268,9 +268,9 @@ const addReviewReply = async (req, res) => {
         })
 
         await review.save()
-        await review.populate("user", "firstName lastName")
+        await review.populate("user", "firstName lastName profilePath")
         await review.populate("product", "name")
-        await review.populate("replies.authorId", "firstName lastName role")
+        await review.populate("replies.authorId", "firstName lastName role profilePath")
 
         res.status(201).json(review)
     } catch (error) {
@@ -308,7 +308,7 @@ const deleteReviewReply = async (req, res) => {
         await review.save()
         await review.populate("user", "firstName lastName profilePath")
         await review.populate("product", "name")
-        await review.populate("replies.authorId", "firstName lastName role")
+        await review.populate("replies.authorId", "firstName lastName role profilePath")
 
         res.status(200).json({ message: "Reply deleted successfully", review })
     } catch (error) {

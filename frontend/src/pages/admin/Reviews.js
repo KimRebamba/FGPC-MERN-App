@@ -6,7 +6,53 @@ import Loader from "../../components/Layout/Loader"
 import ErrorMessage from "../../components/Layout/ErrorMessage"
 import DataTable from "../../components/Table/DataTable"
 import { formatDate } from "../../utils/formatDate"
+import { resolveImageUrl } from "../../utils/resolveImageUrl"
 import api from "../../api/axiosClient"
+
+const AvatarCircle = ({ user, size = 32, fallbackInitial = "U", isAdmin = false }) => {
+    const avatarUrl = user?.profilePath ? resolveImageUrl(user.profilePath) : null
+    const initial = (user?.firstName?.[0] || user?.lastName?.[0] || fallbackInitial || "U").toUpperCase()
+
+    if (avatarUrl) {
+        return (
+            <img
+                src={avatarUrl}
+                alt={user?.firstName || "Avatar"}
+                style={{
+                    width: `${size}px`,
+                    height: `${size}px`,
+                    borderRadius: "50%",
+                    objectFit: "cover",
+                    border: isAdmin ? "2px solid var(--accent)" : "1.5px solid #333",
+                    flexShrink: 0,
+                    display: "block"
+                }}
+            />
+        )
+    }
+
+    return (
+        <div
+            style={{
+                width: `${size}px`,
+                height: `${size}px`,
+                borderRadius: "50%",
+                background: isAdmin ? "rgba(198, 255, 0, 0.15)" : "#222",
+                color: isAdmin ? "var(--accent)" : "#eee",
+                border: isAdmin ? "1.5px solid var(--accent)" : "1.5px solid #333",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontWeight: 700,
+                fontSize: `${Math.max(11, Math.round(size * 0.42))}px`,
+                flexShrink: 0,
+                textTransform: "uppercase"
+            }}
+        >
+            {initial}
+        </div>
+    )
+}
 
 const emptyFilters = { search: "", rating: "" }
 
@@ -139,7 +185,7 @@ const Reviews = () => {
                             style={{ padding: "6px 12px", fontSize: "13px" }}
                             onClick={() => setSelectedReview(fullItem)}
                         >
-                            Details & Replies
+                            Details
                         </button>
                         <button
                             type="button"
@@ -297,9 +343,12 @@ const Reviews = () => {
                                 </span>
                             </div>
 
-                            <p style={{ fontSize: "14px", color: "var(--text-muted)", margin: "0 0 10px 0" }}>
-                                Author: <strong style={{ color: "var(--text)" }}>{selectedReview.user ? `${selectedReview.user.firstName} ${selectedReview.user.lastName}` : "Customer"}</strong>
-                            </p>
+                            <div style={{ display: "flex", alignItems: "center", gap: "10px", margin: "0 0 12px 0" }}>
+                                <AvatarCircle user={selectedReview.user} size={36} fallbackInitial="C" />
+                                <p style={{ fontSize: "14px", color: "var(--text-muted)", margin: 0 }}>
+                                    Author: <strong style={{ color: "var(--text)" }}>{selectedReview.user ? `${selectedReview.user.firstName} ${selectedReview.user.lastName}` : "Customer"}</strong>
+                                </p>
+                            </div>
 
                             <p style={{ fontSize: "16px", color: "#EEEEEE", lineHeight: "1.6", margin: 0 }}>
                                 {selectedReview.description || "(No written feedback provided)"}
@@ -352,8 +401,9 @@ const Reviews = () => {
                                             >
                                                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "10px" }}>
                                                     <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                                                        <AvatarCircle user={author} size={28} fallbackInitial={isAdmin ? "A" : "U"} isAdmin={isAdmin} />
                                                         <span style={{ fontSize: "15px", fontWeight: 700, color: isAdmin ? "var(--accent)" : "var(--text)" }}>
-                                                            {isAdmin ? "🛡️ Store Admin" : `👤 ${authorName}`}
+                                                            {isAdmin ? "🛡️ Store Admin" : authorName}
                                                         </span>
                                                         <span style={{ fontSize: "12px", color: "var(--text-dim)" }}>
                                                             {formatDate(reply.createdAt)}
