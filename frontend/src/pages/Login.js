@@ -32,6 +32,7 @@ const GoogleIcon = () => (
     </svg>
 )
 
+// [prof-requirements: Unit 1 - Form validation on user login: Yup & Formik (10pts)]
 const loginValidationSchema = Yup.object().shape({
     email: Yup.string()
         .trim()
@@ -83,6 +84,7 @@ const Login = () => {
         }
     })
 
+    // [prof-requirements: Quiz 4 - Gmail login using Firebase auth (15pts)]
     const handleGoogleLogin = async () => {
         setLocalError(null)
 

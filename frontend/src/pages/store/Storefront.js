@@ -7,6 +7,8 @@ import { fgpcLogo } from "../../assets"
 const Storefront = () => {
     const dispatch = useDispatch()
     const { items: products, loading } = useSelector((state) => state.products)
+
+    // [prof-requirements: Quiz 3 - Pagination on products list on homepage (10pts)]
     const [page, setPage] = useState(1)
     const itemsPerPage = 4
 
@@ -50,7 +52,7 @@ const Storefront = () => {
             {/* ---- Best Sellers / Featured with Pagination by 4s ---- */}
             {!loading && sortedProducts.length > 0 && (
                 <section className="storefront-section" style={{ padding: "60px 40px", maxWidth: "1250px", margin: "0 auto" }}>
-                    <div className="storefront-section-header" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "28px" }}>
+                    <div className="storefront-section-header" style={{ display: "flex", alignItems: "start", justifyContent: "space-between", marginBottom: "28px" }}>
                         <div>
                             <h2 className="storefront-section-title" style={{ fontSize: "28px", margin: "0 0 6px 0" }}>
                                 Featured Gear

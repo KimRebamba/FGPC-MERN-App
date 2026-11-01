@@ -10,6 +10,7 @@ import { resolveImageUrl } from "../../utils/resolveImageUrl"
 import api from "../../api/axiosClient"
 import { getErrorMessage } from "../../utils/getErrorMessage"
 
+// [prof-requirements: Unit 1 - Form validation on update profile: Yup & Formik (10pts)]
 const profileValidationSchema = Yup.object().shape({
     firstName: Yup.string()
         .trim()

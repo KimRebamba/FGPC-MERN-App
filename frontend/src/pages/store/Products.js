@@ -17,6 +17,7 @@ const Products = () => {
 
     const [visibleCount, setVisibleCount] = useState(6)
 
+    // [prof-requirements: MP2 - Filter functions: price filter (5pts), category filter (5pts), ratings filter (5pts)]
     const [filters, setFilters] = useState({
         search: "",
         category: "",
@@ -76,7 +77,7 @@ const Products = () => {
         setVisibleCount(6)
     }, [products])
 
-    // Infinite scroll listener
+    // [prof-requirements: Quiz 3 - Infinite scroll on products list (15pts)]
     useEffect(() => {
         const handleScroll = () => {
             if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 250) {

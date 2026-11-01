@@ -20,6 +20,7 @@ const EyeOffIcon = () => (
     </svg>
 )
 
+// [prof-requirements: Unit 1 - Form validation on user registration: Yup & Formik (10pts)]
 const registerValidationSchema = Yup.object().shape({
     firstName: Yup.string()
         .trim()

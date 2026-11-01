@@ -14,6 +14,8 @@ const emptyProduct = {
     isActive: true
 }
 
+// [prof-requirements: Unit 1 - Form validation on product forms using Yup & Formik (10pts)]
+// [prof-requirements: MP1 - Multiple photos upload support]
 const productValidationSchema = Yup.object().shape({
     name: Yup.string()
         .trim()

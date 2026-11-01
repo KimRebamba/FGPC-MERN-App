@@ -160,6 +160,7 @@ const createOrder = async (req, res) => {
     }
 }
 
+// [prof-requirements: Term Test Lab - Admin updates the status of the transaction (5pts)]
 const updateOrderStatus = async (req, res) => {
     try {
         const { id } = req.params
@@ -212,6 +213,7 @@ const updateOrderStatus = async (req, res) => {
     }
 }
 
+// [prof-requirements: Term Test Lab - Completed transaction (10pts)]
 const completeOrder = async (req, res) => {
     try {
         const { id } = req.params

@@ -102,6 +102,7 @@ const login = async (req, res) => {
     }
 }
 
+// [prof-requirements: Quiz 4 - Gmail login using firebase (15pts)]
 const googleLogin = async (req, res) => {
     try {
         const { idToken, remember = true } = req.body || {}

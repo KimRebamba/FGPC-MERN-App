@@ -18,6 +18,7 @@ const maskBadWords = (text) => {
 
 const editableFields = ["rating", "title", "description"]
 
+// [prof-requirements: MP2 - Review filter: search by product name and rating]
 const getReviews = async (req, res) => {
     try {
         const { product, user, rating, search } = req.query
@@ -96,6 +97,7 @@ const getReview = async (req, res) => {
     }
 }
 
+// [prof-requirements: MP3 - Users who availed of the product/service can write a review and rate the product (10pts)]
 const createReview = async (req, res) => {
     try {
         const { user, product, order, rating, title, description } = req.body || {}
@@ -131,7 +133,7 @@ const createReview = async (req, res) => {
 
         const targetUser = isAdmin && user && isValidId(user) ? user : req.user._id
 
-        // Mask bad words
+        // [prof-requirements: Unit 1 - Filter/mask bad words from reviews using bad-words package (10pts)]
         const cleanTitle = maskBadWords(title || "")
         const cleanDescription = maskBadWords(description || "")
 
@@ -150,6 +152,7 @@ const createReview = async (req, res) => {
     }
 }
 
+// [prof-requirements: MP3 - Users can update their own review/rating (5pts)]
 const updateReview = async (req, res) => {
     try {
         const { id } = req.params
@@ -203,6 +206,7 @@ const updateReview = async (req, res) => {
     }
 }
 
+// [prof-requirements: MP3 - Admin can delete a review (5pts)]
 const deleteReview = async (req, res) => {
     try {
         const { id } = req.params

@@ -1,3 +1,5 @@
+// [prof-requirements: MP1 - Product/Service CRUD datatables (20pts)]
+// [prof-requirements: Unit 2 - Material UI (MUI) @mui/x-data-grid component library (20pts)]
 import { DataGrid } from "@mui/x-data-grid"
 
 const DataTable = ({ columns, rows, emptyMessage = "Nothing to show yet" }) => {

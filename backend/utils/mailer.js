@@ -30,6 +30,7 @@ const getTransporter = () => {
  * @param {Object} order - The updated order
  * @param {string} updateMessage - Description of status change (e.g. "Order marked as paid")
  */
+// [prof-requirements: Term Test Lab - Email customer updated transaction details with products list, subtotal, grand total (5pts) & PDF receipt (10pts)]
 const sendOrderTransactionEmail = async (order, updateMessage = "") => {
     if (!isMailtrapEnabled()) {
         console.log("[Mailer] Mailtrap is currently DISABLED (MAILTRAP_ENABLED=false). Email skipped.")

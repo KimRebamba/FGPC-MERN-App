@@ -9,6 +9,7 @@ const { isValidId, toBoolean, pickFields, sendError } = require("../utils/http")
 
 const editableFields = ["name", "description", "price", "category", "brand", "images", "isActive", "stock"]
 
+// [prof-requirements: MP2 - Filter functions: price filter, category filter, ratings filter]
 const getProducts = async (req, res) => {
     try {
         const { search, category, brand, isActive, status, deleted, minPrice, maxPrice, minRating } = req.query
@@ -17,7 +18,7 @@ const getProducts = async (req, res) => {
         if (status === "deleted" || deleted === "true") {
             filter.deletedAt = { $ne: null }
         } else if (status === "all") {
-            // all products including deleted
+            // Include both active and soft-deleted items
         } else {
             filter.deletedAt = null
         }
@@ -207,6 +208,7 @@ const getProduct = async (req, res) => {
     }
 }
 
+// [prof-requirements: MP1 - Product CRUD: create with multiple photo upload]
 const createProduct = async (req, res) => {
     try {
         const details = pickFields(req.body, editableFields)
@@ -233,6 +235,7 @@ const createProduct = async (req, res) => {
     }
 }
 
+// [prof-requirements: MP1 - Product CRUD: update product]
 const updateProduct = async (req, res) => {
     try {
         const { id } = req.params
@@ -283,6 +286,7 @@ const updateProduct = async (req, res) => {
     }
 }
 
+// [prof-requirements: MP1 - Product CRUD: soft deletion]
 const deleteProduct = async (req, res) => {
     try {
         const { id } = req.params

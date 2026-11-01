@@ -158,6 +158,7 @@ const ChartTooltip = ({ active, payload, label }) => {
     )
 }
 
+// [prof-requirements: Quiz 2 - Sales charts with date range filter: line or bar chart (15pts)]
 const Dashboard = () => {
     const dispatch = useDispatch()
     const { user } = useAuth()

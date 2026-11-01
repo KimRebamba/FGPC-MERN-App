@@ -64,6 +64,8 @@ const Stars = ({ rating }) => {
     )
 }
 
+// [prof-requirements: MP2 - Review filter: search by product name & rating (5pts)]
+// [prof-requirements: MP3 - Admin can delete a review (5pts)]
 const Reviews = () => {
     const dispatch = useDispatch()
     const { items: reviews, count, loading, error, message } = useSelector((state) => state.reviews)

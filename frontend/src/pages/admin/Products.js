@@ -13,6 +13,7 @@ import { resolveImageUrl } from "../../utils/resolveImageUrl"
 
 const emptyFilters = { search: "", category: "", status: "" }
 
+// [prof-requirements: MP1 - Product CRUD datatables (20pts)]
 const Products = () => {
     const dispatch = useDispatch()
     const { items: products, count, loading, error, message } = useSelector((state) => state.products)
