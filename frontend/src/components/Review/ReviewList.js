@@ -94,7 +94,7 @@ const ReviewItem = ({ review, currentUser, onReplySubmitted }) => {
 
     return (
         <li className="review-item">
-            <div className="review-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "14px" }}>
+            <div className="review-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "start", flexWrap: "wrap", gap: "14px" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
                     <AvatarCircle user={review.user} size={44} fallbackInitial="C" />
                     <div className="review-author-info">

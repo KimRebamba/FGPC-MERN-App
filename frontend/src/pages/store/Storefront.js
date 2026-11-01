@@ -134,11 +134,11 @@ const Storefront = () => {
                             was "uncool", then read about the horror stories of fellow riders getting
                             their fingers turned into bloody crayons on the road. That there must be a way
                             to make riders, especially beginners, have a change of heart.
-                            That gear shouldn't an afterthought. Plus, I think wearing gear is, for lack of a better term,
+                            That gear shouldn't be an afterthought. Plus, I think wearing gear is, for lack of a better term,
                             sexy as hell.
                         </p>
                         <p>
-                            Started off in 2026 where I used my first motorcycle gifted from my dad to commute from home to
+                            Started off in 2026 where I used my first motorcycle, gifted from my dad, to commute from home to
                             university. Saved up every peso that I had for a good motorcycle riding jacket, pants, and a pair of boots
                             from Marikina. I felt like a badass going to class with it, and you should too.
                         </p>

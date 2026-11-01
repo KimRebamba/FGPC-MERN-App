@@ -237,11 +237,11 @@ const CustomerOrderDetails = () => {
 
             {/* Visual Step Tracker (for active orders) */}
             {order.status !== "cancelled" && order.status !== "refunded" && (
-                <div style={{ background: "var(--surface)", border: "1px solid var(--border)", padding: "28px 36px", marginBottom: "36px" }}>
+                <div className="order-progress-tracker" style={{ background: "var(--surface)", border: "1px solid var(--border)", padding: "28px 36px", marginBottom: "36px" }}>
                     <p style={{ fontSize: "14px", letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--text-muted)", marginBottom: "20px", fontWeight: 600 }}>
                         Order Progress
                     </p>
-                    <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "16px", position: "relative" }}>
+                    <div className="order-progress-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "16px", position: "relative" }}>
                         {statusSteps.map((step, idx) => {
                             const isReached = currentStepIndex >= idx
                             const isCurrent = order.status === step
@@ -272,7 +272,7 @@ const CustomerOrderDetails = () => {
             )}
 
             {/* Main content grid */}
-            <div style={{ display: "grid", gridTemplateColumns: "1.6fr 1fr", gap: "40px", alignItems: "start" }}>
+            <div className="customer-order-details-layout" style={{ display: "grid", gridTemplateColumns: "1.6fr 1fr", gap: "40px", alignItems: "start" }}>
                 {/* Left: Items list */}
                 <div style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
                     <div style={{ background: "var(--surface)", border: "1px solid var(--border)", padding: "32px" }}>
