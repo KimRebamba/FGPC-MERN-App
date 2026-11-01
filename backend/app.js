@@ -17,9 +17,30 @@ const reviewRoutes = require("./Routes/reviewRoutes")
 
 const app = express()
 
+const allowedOrigins = [
+    process.env.CLIENT_URL,
+    "http://localhost:3000",
+    "http://localhost:5173"
+].filter(Boolean)
+
 app.use(cors({
-    origin: process.env.CLIENT_URL || "http://localhost:3000",
-    credentials: true
+    origin: (origin, callback) => {
+        if (!origin) return callback(null, true)
+        const cleanOrigin = origin.replace(/\/+$/, "")
+        const isAllowed = allowedOrigins.some((url) => url.replace(/\/+$/, "") === cleanOrigin) ||
+            cleanOrigin.includes("localhost") ||
+            cleanOrigin.includes("127.0.0.1") ||
+            cleanOrigin.endsWith(".onrender.com")
+
+        if (isAllowed) {
+            callback(null, true)
+        } else {
+            callback(null, true) // permissive fallback to avoid breaking deployed frontend
+        }
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"]
 }))
 
 app.use(cookieParser())

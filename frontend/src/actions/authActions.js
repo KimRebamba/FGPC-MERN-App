@@ -23,10 +23,15 @@ export const loginUser = (email, password, remember) => async (dispatch) => {
     try {
         const { data } = await api.post("/auth/login", { email, password, remember })
 
+        if (data.token) {
+            localStorage.setItem("fgp_token", data.token)
+        }
+
         dispatch({ type: LOGIN_SUCCESS, payload: data.user })
 
         return data.user
     } catch (error) {
+        localStorage.removeItem("fgp_token")
         dispatch({ type: LOGIN_FAIL, payload: getErrorMessage(error) })
 
         return null
@@ -39,10 +44,15 @@ export const loginWithGoogle = (idToken) => async (dispatch) => {
     try {
         const { data } = await api.post("/auth/google", { idToken })
 
+        if (data.token) {
+            localStorage.setItem("fgp_token", data.token)
+        }
+
         dispatch({ type: LOGIN_SUCCESS, payload: data.user })
 
         return data.user
     } catch (error) {
+        localStorage.removeItem("fgp_token")
         dispatch({ type: LOGIN_FAIL, payload: getErrorMessage(error) })
 
         return null
@@ -55,10 +65,15 @@ export const registerUser = (values) => async (dispatch) => {
     try {
         const { data } = await api.post("/auth/register", values)
 
+        if (data.token) {
+            localStorage.setItem("fgp_token", data.token)
+        }
+
         dispatch({ type: REGISTER_SUCCESS, payload: data.user })
 
         return data.user
     } catch (error) {
+        localStorage.removeItem("fgp_token")
         dispatch({ type: REGISTER_FAIL, payload: getErrorMessage(error) })
 
         return null
@@ -73,6 +88,7 @@ export const loadUser = () => async (dispatch) => {
 
         dispatch({ type: LOAD_USER_SUCCESS, payload: data })
     } catch (error) {
+        localStorage.removeItem("fgp_token")
         dispatch({ type: LOAD_USER_FAIL })
     }
 }
@@ -94,9 +110,12 @@ export const updateProfile = (values) => async (dispatch) => {
 }
 
 export const logoutUser = () => async (dispatch) => {
-    await api.post("/auth/logout").catch(() => null)
-
-    dispatch({ type: LOGOUT })
+    try {
+        await api.post("/auth/logout").catch(() => null)
+    } finally {
+        localStorage.removeItem("fgp_token")
+        dispatch({ type: LOGOUT })
+    }
 }
 
 export const clearAuthError = () => (dispatch) => {
