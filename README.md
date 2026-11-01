@@ -165,25 +165,25 @@ cd backend
 npm install
 ```
 
-Create a `.env` file inside the `backend/` directory (you can refer to `backend/render-env.txt` for all available keys):
+Create a `.env` file inside the `backend/` directory:
 
 ```env
 PORT=8000
 NODE_ENV=development
-MONGO_URI=mongodb://127.0.0.1:27017/fgp
-JWT_SECRET=supersecretfgpjwtkey2026fgpcsecure
+MONGO_URI=
+JWT_SECRET=
 CLIENT_URL=http://localhost:3000
 
 # Cloudinary (Image Hosting)
 CLOUDINARY_ENABLED=true
-CLOUDINARY_CLOUD_NAME=zde7dpud
-CLOUDINARY_API_KEY=643555333758435
-CLOUDINARY_API_SECRET=ZabXy0VqtGfzn2VPwrmotzT_b0Q
+CLOUDINARY_CLOUD_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
 
 # Mailtrap (Email & PDF Receipts)
 MAILTRAP_ENABLED=true
-MAILTRAP_USER=d06f8760800fa0
-MAILTRAP_PASS=c6053775ed89ea
+MAILTRAP_USER=
+MAILTRAP_PASS=
 
 # Render deployment toggle (leave false for local MongoDB)
 DEPLOY_TO_RENDER=false
