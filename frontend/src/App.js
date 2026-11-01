@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 
 import { loadUser } from "./actions/authActions"
 import AdminRoute from "./components/Route/AdminRoute"
@@ -40,6 +40,29 @@ import Carts from "./pages/admin/Carts"
 import AuthIdentities from "./pages/admin/AuthIdentities"
 import AdminProfile from "./pages/admin/AdminProfile"
 
+const TitleAndFaviconManager = () => {
+    const { user } = useSelector((state) => state.auth)
+
+    useEffect(() => {
+        const isAdmin = user?.role === "admin"
+        document.title = isAdmin ? "FGPC | Admin" : "FGPC"
+
+        const setFavicon = () => {
+            let link = document.querySelector("link[rel*='icon']")
+            if (!link) {
+                link = document.createElement("link")
+                link.rel = "icon"
+                document.head.appendChild(link)
+            }
+            link.type = "image/png"
+            link.href = (process.env.PUBLIC_URL || "") + "/fgp-logo-icon.png"
+        }
+        setFavicon()
+    }, [user])
+
+    return null
+}
+
 const App = () => {
     const dispatch = useDispatch()
 
@@ -49,6 +72,7 @@ const App = () => {
 
     return (
         <Router>
+            <TitleAndFaviconManager />
             <Routes>
                 {/* ---- Store (public + protected) ---- */}
                 <Route element={<StoreLayout />}>

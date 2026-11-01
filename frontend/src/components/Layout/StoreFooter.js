@@ -36,7 +36,6 @@ const StoreFooter = () => {
 
             <div className="footer-bottom">
                 <span>© {new Date().getFullYear()} FGP Gear. All rights reserved.</span>
-                <span>Premium · Utilitarian · Made to last</span>
             </div>
         </footer>
     )

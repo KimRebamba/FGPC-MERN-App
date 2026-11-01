@@ -33,9 +33,7 @@ const Categories = () => {
             {/* Header */}
             <div className="categories-page-header">
                 <h1 className="products-page-title">Shop by Category</h1>
-                <p style={{ color: "var(--text-muted)", fontSize: "14px" }}>
-                    Helmets, Jackets, Gloves, Boots, Armor — gear built for the road.
-                </p>
+
 
                 <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
                     <input

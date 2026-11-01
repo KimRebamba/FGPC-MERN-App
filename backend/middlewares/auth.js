@@ -21,7 +21,7 @@ const protect = async (req, res, next) => {
         const token = readToken(req)
 
         if (!token) {
-            return res.status(401).json({ error: "You must be logged in to do this" })
+            return res.status(401).json({ error: "You must be logged in to access this" })
         }
 
         const decoded = verifyToken(token)

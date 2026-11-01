@@ -1,5 +1,6 @@
 import fgpLogo from "./fgp-logo.png"
 import fgpLogoSmall from "./fgp-logo-small.png"
+import fgpLogoIcon from "./fgp-logo-icon.png"
 import fgpcLogo from "./fgpc-logo.png"
 import fgpcLogoSmall from "./fgpc-logo-small.png"
 import heroJfif from "./hero.jfif"
@@ -9,6 +10,7 @@ import keanu from "./keanu.avif"
 export {
     fgpLogo,
     fgpLogoSmall,
+    fgpLogoIcon,
     fgpcLogo,
     fgpcLogoSmall,
     heroJfif,
@@ -19,6 +21,7 @@ export {
 const assets = {
     fgpLogo,
     fgpLogoSmall,
+    fgpLogoIcon,
     fgpcLogo,
     fgpcLogoSmall,
     heroJfif,

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { productActions } from "../../actions/resourceActions"
 import ProductCard from "../../components/Product/ProductCard"
-import { fgpcLogo, keanu } from "../../assets"
+import { fgpcLogo } from "../../assets"
 
 const Storefront = () => {
     const dispatch = useDispatch()
