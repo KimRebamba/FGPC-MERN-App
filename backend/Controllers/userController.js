@@ -1,7 +1,10 @@
 const bcrypt = require("bcryptjs")
 const User = require("../Models/User")
+const AuthIdentity = require("../Models/AuthIdentity")
+const Cart = require("../Models/Cart")
 const { toSafeUser } = require("../utils/safeUser")
-const { isValidId, pickFields, sendError } = require("../utils/http")
+const { uploadSingleImage } = require("../utils/uploads")
+const { isValidId, toBoolean, pickFields, sendError } = require("../utils/http")
 
 const editableFields = [
     "firstName",
@@ -17,8 +20,16 @@ const editableFields = [
 
 const getUsers = async (req, res) => {
     try {
-        const { search, role, isDeactivated } = req.query
-        const filter = { deletedAt: null }
+        const { search, role, isDeactivated, status, deleted } = req.query
+        let filter = {}
+
+        if (deleted === "true" || status === "deleted") {
+            filter.deletedAt = { $ne: null }
+        } else if (status === "all") {
+            // all
+        } else {
+            filter.deletedAt = null
+        }
 
         if (search) {
             filter.$or = [
@@ -28,12 +39,14 @@ const getUsers = async (req, res) => {
             ]
         }
 
-        if (role) {
+        if (role && role !== "all") {
             filter.role = role
         }
 
-        if (isDeactivated !== undefined) {
-            filter.isDeactivated = isDeactivated === "true"
+        if (status === "deactivated" || isDeactivated === "true" || isDeactivated === true) {
+            filter.isDeactivated = true
+        } else if (status === "active" || isDeactivated === "false" || isDeactivated === false) {
+            filter.isDeactivated = false
         }
 
         const users = await User.find(filter).sort({ createdAt: -1 })
@@ -68,8 +81,16 @@ const createUser = async (req, res) => {
     try {
         const details = pickFields(req.body, editableFields)
 
+        if (details.isDeactivated !== undefined) {
+            details.isDeactivated = toBoolean(details.isDeactivated)
+        }
+
         if (req.body?.password) {
             details.password = await bcrypt.hash(req.body.password, 10)
+        }
+
+        if (req.file) {
+            details.profilePath = await uploadSingleImage(req.file, "profiles")
         }
 
         const user = await User.create(details)
@@ -89,9 +110,32 @@ const updateUser = async (req, res) => {
         }
 
         const updates = pickFields(req.body, editableFields)
+        const isSelf = id === String(req.user._id)
+
+        if (updates.isDeactivated !== undefined) {
+            updates.isDeactivated = toBoolean(updates.isDeactivated)
+        }
+
+        if (isSelf && updates.isDeactivated === true) {
+            return res.status(400).json({ error: "You cannot deactivate your own account" })
+        }
+
+        if (isSelf && updates.role && updates.role !== "admin") {
+            return res.status(400).json({ error: "You cannot change your own role" })
+        }
 
         if (req.body?.password) {
             updates.password = await bcrypt.hash(req.body.password, 10)
+        }
+
+        if (req.file) {
+            updates.profilePath = await uploadSingleImage(req.file, "profiles")
+        }
+
+        if (req.body.restore === "true" || req.body.restore === true) {
+            updates.deletedAt = null
+            updates.deletedBy = null
+            updates.isDeactivated = false
         }
 
         if (Object.keys(updates).length === 0) {
@@ -99,7 +143,7 @@ const updateUser = async (req, res) => {
         }
 
         const user = await User.findOneAndUpdate(
-            { _id: id, deletedAt: null },
+            { _id: id },
             updates,
             { returnDocument: "after", runValidators: true }
         )
@@ -122,15 +166,30 @@ const deleteUser = async (req, res) => {
             return res.status(400).json({ error: "Invalid user id" })
         }
 
+        if (id === String(req.user._id)) {
+            return res.status(400).json({ error: "You cannot delete your own account" })
+        }
+
         const user = await User.findOneAndUpdate(
             { _id: id, deletedAt: null },
-            { deletedAt: new Date(), deletedBy: req.body?.deletedBy ?? null },
+            { deletedAt: new Date(), deletedBy: req.user._id },
             { returnDocument: "after" }
         )
 
         if (!user) {
             return res.status(404).json({ error: "User not found" })
         }
+
+        await Promise.all([
+            AuthIdentity.updateMany(
+                { user: user._id, deletedAt: null },
+                { deletedAt: user.deletedAt, deletedBy: req.user._id }
+            ),
+            Cart.updateMany(
+                { user: user._id, deletedAt: null },
+                { deletedAt: user.deletedAt, deletedBy: req.user._id }
+            )
+        ])
 
         res.status(200).json({ message: "User deleted", user: toSafeUser(user) })
     } catch (error) {

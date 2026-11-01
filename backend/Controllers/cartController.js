@@ -13,6 +13,8 @@ const readQuantity = (value, fallback) => {
     return Number.isInteger(quantity) && quantity >= 1 ? quantity : null
 }
 
+const canUseCart = (req, userId) => req.user.role === "admin" || String(req.user._id) === String(userId)
+
 const getCarts = async (req, res) => {
     try {
         const carts = await Cart.find({ deletedAt: null })
@@ -32,6 +34,10 @@ const getCart = async (req, res) => {
 
         if (!isValidId(userId)) {
             return res.status(400).json({ error: "Invalid user id" })
+        }
+
+        if (!canUseCart(req, userId)) {
+            return res.status(403).json({ error: "You can only open your own cart" })
         }
 
         let cart = await Cart.findOne({ user: userId, deletedAt: null }).populate(populatedProduct)
@@ -55,6 +61,10 @@ const addCartItem = async (req, res) => {
             return res.status(400).json({ error: "Invalid user id" })
         }
 
+        if (!canUseCart(req, userId)) {
+            return res.status(403).json({ error: "You can only change your own cart" })
+        }
+
         if (!isValidId(product)) {
             return res.status(400).json({ error: "Invalid product id" })
         }
@@ -75,6 +85,10 @@ const addCartItem = async (req, res) => {
             return res.status(400).json({ error: "Product is not available" })
         }
 
+        if (existingProduct.stock < 1) {
+            return res.status(400).json({ error: "Product is out of stock" })
+        }
+
         let cart = await Cart.findOne({ user: userId, deletedAt: null })
 
         if (!cart) {
@@ -82,9 +96,17 @@ const addCartItem = async (req, res) => {
         }
 
         const cartItem = cart.items.find((item) => item.product && item.product.equals(product))
+        const currentQuantity = cartItem ? cartItem.quantity : 0
+        const targetQuantity = currentQuantity + quantity
+
+        if (targetQuantity > existingProduct.stock) {
+            return res.status(400).json({
+                error: `Only ${existingProduct.stock} item${existingProduct.stock !== 1 ? "s" : ""} in stock. You already have ${currentQuantity} in your cart.`
+            })
+        }
 
         if (cartItem) {
-            cartItem.quantity += quantity
+            cartItem.quantity = targetQuantity
         } else {
             cart.items.push({ product, quantity })
         }
@@ -106,6 +128,10 @@ const updateCartItemQuantity = async (req, res) => {
             return res.status(400).json({ error: "Invalid cart or item id" })
         }
 
+        if (!canUseCart(req, userId)) {
+            return res.status(403).json({ error: "You can only change your own cart" })
+        }
+
         const quantity = readQuantity(req.body?.quantity, null)
 
         if (!quantity) {
@@ -122,6 +148,17 @@ const updateCartItemQuantity = async (req, res) => {
 
         if (!cartItem) {
             return res.status(404).json({ error: "Cart item not found" })
+        }
+
+        const product = await Product.findOne({ _id: cartItem.product, deletedAt: null })
+        if (!product) {
+            return res.status(404).json({ error: "Product not found" })
+        }
+
+        if (quantity > product.stock) {
+            return res.status(400).json({
+                error: `Only ${product.stock} item${product.stock !== 1 ? "s" : ""} available in stock`
+            })
         }
 
         cartItem.quantity = quantity
@@ -141,6 +178,10 @@ const removeCartItem = async (req, res) => {
 
         if (!isValidId(userId) || !isValidId(itemId)) {
             return res.status(400).json({ error: "Invalid cart or item id" })
+        }
+
+        if (!canUseCart(req, userId)) {
+            return res.status(403).json({ error: "You can only change your own cart" })
         }
 
         const cart = await Cart.findOne({ user: userId, deletedAt: null })
@@ -172,6 +213,10 @@ const clearCart = async (req, res) => {
 
         if (!isValidId(userId)) {
             return res.status(400).json({ error: "Invalid user id" })
+        }
+
+        if (!canUseCart(req, userId)) {
+            return res.status(403).json({ error: "You can only change your own cart" })
         }
 
         const cart = await Cart.findOne({ user: userId, deletedAt: null })

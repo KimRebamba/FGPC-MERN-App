@@ -1,6 +1,7 @@
 const fs = require("node:fs")
 const path = require("node:path")
-const admin = require("firebase-admin")
+const { initializeApp, getApps, cert } = require("firebase-admin/app")
+const { getAuth } = require("firebase-admin/auth")
 
 let firebaseApp = null
 
@@ -32,28 +33,47 @@ const readFileCredentials = () => {
 
 const readCredentials = () => readEnvCredentials() || readFileCredentials()
 
-const isFirebaseConfigured = () => readCredentials() !== null
+const getProjectId = () => {
+    const creds = readCredentials()
+    return creds?.projectId || process.env.FIREBASE_PROJECT_ID || "fgp-mern"
+}
+
+const isFirebaseConfigured = () => {
+    return readCredentials() !== null || Boolean(getProjectId())
+}
 
 const getFirebaseApp = () => {
     if (firebaseApp) {
         return firebaseApp
     }
 
-    const credentials = readCredentials()
-
-    if (!credentials) {
-        throw new Error("Firebase Admin credentials are missing. Add backend/serviceAccountKey.json or set FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL and FIREBASE_PRIVATE_KEY in .env")
+    const existingApps = getApps()
+    if (existingApps.length > 0) {
+        firebaseApp = existingApps[0]
+        return firebaseApp
     }
 
-    firebaseApp = admin.initializeApp({
-        credential: admin.credential.cert(credentials)
-    })
+    const credentials = readCredentials()
+
+    if (credentials) {
+        firebaseApp = initializeApp({
+            credential: cert(credentials),
+            projectId: credentials.projectId
+        })
+    } else {
+        const projectId = getProjectId()
+        if (!projectId) {
+            throw new Error("Firebase Admin credentials or project ID are missing. Add backend/serviceAccountKey.json or set FIREBASE_PROJECT_ID in .env")
+        }
+        firebaseApp = initializeApp({ projectId })
+    }
 
     return firebaseApp
 }
 
 const verifyGoogleIdToken = async (idToken) => {
-    const decodedToken = await getFirebaseApp().auth().verifyIdToken(idToken)
+    const app = getFirebaseApp()
+    const decodedToken = await getAuth(app).verifyIdToken(idToken)
 
     return {
         providerUserId: decodedToken.uid,

@@ -1,10 +1,12 @@
+// Maps a status string to a styled badge.
 const StatusBadge = ({ value }) => {
-    const label = value || "unknown"
+    if (!value && value !== false) return null
+
+    const label = String(value).toLowerCase().replace(/_/g, " ")
+    const cssClass = "status-badge status-badge--" + label.replace(/\s/g, "-")
 
     return (
-        <span className={"status-badge status-badge-" + String(label).toLowerCase()}>
-            {label}
-        </span>
+        <span className={cssClass}>{label}</span>
     )
 }
 

@@ -6,9 +6,11 @@ const {
     getReview,
     createReview,
     updateReview,
-    deleteReview
+    deleteReview,
+    addReviewReply,
+    deleteReviewReply
 } = require("../Controllers/reviewController")
-const { protect, requireAdmin } = require("../middlewares/auth")
+const { protect } = require("../middlewares/auth")
 
 router.get("/", getReviews)
 
@@ -16,8 +18,12 @@ router.get("/:id", getReview)
 
 router.post("/", protect, createReview)
 
+router.post("/:id/replies", protect, addReviewReply)
+
+router.delete("/:id/replies/:replyId", protect, deleteReviewReply)
+
 router.patch("/:id", protect, updateReview)
 
-router.delete("/:id", protect, requireAdmin, deleteReview)
+router.delete("/:id", protect, deleteReview)
 
 module.exports = router

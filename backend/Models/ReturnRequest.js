@@ -7,6 +7,15 @@ const returnItemSchema = new Schema({
         type: Schema.Types.ObjectId,
         required: true
     },
+    productNameSnapshot: {
+        type: String,
+        default: "",
+        trim: true
+    },
+    priceSnapshot: {
+        type: Schema.Types.Decimal128,
+        default: 0
+    },
     quantity: {
         type: Number,
         required: true,

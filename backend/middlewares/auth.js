@@ -1,15 +1,29 @@
 const User = require("../Models/User")
 const { verifyToken } = require("../utils/jwt")
+const { SESSION_COOKIE } = require("../utils/cookies")
+
+const readToken = (req) => {
+    if (req.cookies && req.cookies[SESSION_COOKIE]) {
+        return req.cookies[SESSION_COOKIE]
+    }
+
+    const header = req.headers.authorization || ""
+
+    if (header.startsWith("Bearer ")) {
+        return header.slice(7)
+    }
+
+    return null
+}
 
 const protect = async (req, res, next) => {
     try {
-        const header = req.headers.authorization || ""
+        const token = readToken(req)
 
-        if (!header.startsWith("Bearer ")) {
+        if (!token) {
             return res.status(401).json({ error: "You must be logged in to do this" })
         }
 
-        const token = header.slice(7)
         const decoded = verifyToken(token)
         const user = await User.findOne({ _id: decoded.id, deletedAt: null })
 

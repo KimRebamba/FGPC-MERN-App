@@ -6,15 +6,18 @@ const {
     getReturnRequest,
     createReturnRequest,
     updateReturnRequest,
+    cancelReturnRequest,
     deleteReturnRequest
 } = require("../Controllers/returnRequestController")
 const { protect, requireAdmin } = require("../middlewares/auth")
 
 router.post("/", protect, createReturnRequest)
 
-router.get("/", protect, requireAdmin, getReturnRequests)
+router.get("/", protect, getReturnRequests)
 
-router.get("/:id", protect, requireAdmin, getReturnRequest)
+router.get("/:id", protect, getReturnRequest)
+
+router.patch("/:id/cancel", protect, cancelReturnRequest)
 
 router.patch("/:id", protect, requireAdmin, updateReturnRequest)
 

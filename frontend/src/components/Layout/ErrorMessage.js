@@ -1,9 +1,9 @@
 const ErrorMessage = ({ message }) => {
-    if (!message) {
-        return null
-    }
+    if (!message) return null
 
-    return <p className="form-error">{message}</p>
+    return (
+        <p className="form-error-box">{message}</p>
+    )
 }
 
 export default ErrorMessage

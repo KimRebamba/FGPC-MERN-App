@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { cartActions } from "../../actions/resourceActions"
+import { cartListActions } from "../../actions/resourceActions"
 import PageHeader from "../../components/Layout/PageHeader"
 import Loader from "../../components/Layout/Loader"
 import ErrorMessage from "../../components/Layout/ErrorMessage"
@@ -13,7 +13,7 @@ const Carts = () => {
     const { items: carts, count, loading, error } = useSelector((state) => state.carts)
 
     useEffect(() => {
-        dispatch(cartActions.fetchAll())
+        dispatch(cartListActions.fetchAll())
     }, [dispatch])
 
     const rows = carts.map((cart) => {

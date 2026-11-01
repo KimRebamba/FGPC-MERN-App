@@ -1,62 +1,85 @@
-import { NavLink, Outlet, useNavigate } from "react-router-dom"
+import { NavLink, Outlet, useNavigate, Link } from "react-router-dom"
 import { useAuth } from "../../hooks/useAuth"
+import { resolveImageUrl } from "../../utils/resolveImageUrl"
 
 const navigationItems = [
     { to: "/admin", label: "Dashboard", end: true },
-    { to: "/admin/products", label: "Products" },
     { to: "/admin/categories", label: "Categories" },
     { to: "/admin/brands", label: "Brands" },
-    { to: "/admin/users", label: "Users" },
     { to: "/admin/orders", label: "Orders" },
-    { to: "/admin/return-requests", label: "Return requests" },
+    { to: "/admin/products", label: "Products" },
     { to: "/admin/reviews", label: "Reviews" },
-    { to: "/admin/carts", label: "Carts" },
-    { to: "/admin/auth-identities", label: "Auth identities" }
+    { to: "/admin/return-requests", label: "Returns" },
+    { to: "/admin/users", label: "Users" }
 ]
 
 const AdminLayout = () => {
     const { user, logout } = useAuth()
     const navigate = useNavigate()
 
-    const handleLogout = () => {
-        logout()
+    const handleLogout = async () => {
+        await logout()
         navigate("/login")
     }
 
+    const avatarUrl = user?.profilePath ? resolveImageUrl(user.profilePath) : null
+    const initials = user ? (user.firstName?.[0] || user.email?.[0] || "A").toUpperCase() : "A"
+
     return (
         <div className="admin-layout">
-            <aside className="admin-sidebar">
-                <p className="admin-brand">FGP Admin</p>
+            <nav className="admin-navbar">
+                {/* Logo */}
+                <Link to="/admin" className="admin-navbar-logo">
+                    <img src="/fgp-logo.png" alt="FGP" />
+                </Link>
 
-                <nav className="admin-nav">
+                {/* Nav links */}
+                <div className="admin-navbar-nav">
                     {navigationItems.map((item) => (
                         <NavLink
                             key={item.to}
                             to={item.to}
                             end={item.end}
-                            className="admin-nav-link"
+                            className={({ isActive }) =>
+                                "admin-nav-link" + (isActive ? " active" : "")
+                            }
                         >
                             {item.label}
                         </NavLink>
                     ))}
-                </nav>
-            </aside>
+                </div>
 
-            <div className="admin-main">
-                <header className="admin-header">
-                    <p className="admin-user">
-                        {user?.firstName} {user?.lastName}
-                    </p>
-                    <p className="admin-email">{user?.email}</p>
+                {/* Right side: go to store + profile + logout */}
+                <div className="admin-navbar-right">
+                    <Link to="/" className="secondary-button" style={{ padding: "6px 14px", fontSize: "12px" }}>
+                        Store
+                    </Link>
+
+                    <NavLink
+                        to="/admin/profile"
+                        className={({ isActive }) =>
+                            "admin-avatar-btn" + (isActive ? " active" : "")
+                        }
+                    >
+                        {avatarUrl ? (
+                            <img src={avatarUrl} alt={user?.firstName} className="admin-avatar-img" />
+                        ) : (
+                            <div className="admin-avatar-placeholder">{initials}</div>
+                        )}
+                        <span className="admin-user-name">
+                            {user?.firstName || "Admin"}
+                        </span>
+                    </NavLink>
+
                     <button type="button" className="logout-button" onClick={handleLogout}>
-                        Log out
+                        Sign out
                     </button>
-                </header>
+                </div>
+            </nav>
 
-                <main className="admin-content">
-                    <Outlet />
-                </main>
-            </div>
+            <main className="admin-content">
+                <Outlet />
+            </main>
         </div>
     )
 }

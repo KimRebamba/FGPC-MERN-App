@@ -9,7 +9,8 @@ const Categories = () => {
             stateKey="categories"
             actions={categoryActions}
             imageField="imagePath"
-            imageLabel="Image path"
+            uploadField="image"
+            imageLabel="Category image"
             singularLabel="category"
         />
     )

@@ -65,16 +65,36 @@ const OrderDetails = () => {
                 <h2 className="section-title">Status</h2>
                 <p className="detail-row">Current: <StatusBadge value={order.status} /></p>
 
-                <form className="inline-form" onSubmit={handleSubmit}>
-                    <select className="form-select" value={status} onChange={(event) => setStatus(event.target.value)}>
-                        {orderStatuses.map((option) => (
-                            <option key={option} value={option}>{option}</option>
-                        ))}
-                    </select>
-                    <button type="submit" className="primary-button" disabled={saving}>
-                        {saving ? "Updating..." : "Update status"}
-                    </button>
-                </form>
+                {order.status === "completed" ? (
+                    <div style={{ marginTop: "16px", padding: "14px 18px", background: "rgba(198, 255, 0, 0.05)", border: "1px solid rgba(198, 255, 0, 0.2)" }}>
+                        <p style={{ color: "var(--accent)", fontSize: "15px", fontWeight: 600, margin: 0 }}>
+                            ✓ Order Completed on {formatDate(order.completedAt)}
+                        </p>
+                        <p style={{ color: "var(--text-muted)", fontSize: "14px", marginTop: "4px", margin: 0 }}>
+                            Completed orders are finalized and cannot be modified.
+                        </p>
+                    </div>
+                ) : order.status === "cancelled" ? (
+                    <div style={{ marginTop: "16px", padding: "14px 18px", background: "rgba(255, 68, 68, 0.08)", border: "1px solid rgba(255, 68, 68, 0.3)" }}>
+                        <p style={{ color: "#ff5555", fontSize: "15px", fontWeight: 600, margin: 0 }}>
+                            ✕ Order Cancelled on {formatDate(order.cancelledAt)}
+                        </p>
+                        <p style={{ color: "var(--text-muted)", fontSize: "14px", marginTop: "4px", margin: 0 }}>
+                            Cancelled orders cannot be modified.
+                        </p>
+                    </div>
+                ) : (
+                    <form className="inline-form" onSubmit={handleSubmit}>
+                        <select className="form-select" value={status} onChange={(event) => setStatus(event.target.value)}>
+                            {orderStatuses.map((option) => (
+                                <option key={option} value={option}>{option}</option>
+                            ))}
+                        </select>
+                        <button type="submit" className="primary-button" disabled={saving}>
+                            {saving ? "Updating..." : "Update status"}
+                        </button>
+                    </form>
+                )}
 
                 <ul className="timeline">
                     <li>Shipped: {formatDate(order.shippedAt)}</li>

@@ -9,7 +9,8 @@ const Brands = () => {
             stateKey="brands"
             actions={brandActions}
             imageField="logoPath"
-            imageLabel="Logo path"
+            uploadField="logo"
+            imageLabel="Brand logo"
             singularLabel="brand"
         />
     )

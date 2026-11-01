@@ -1,7 +1,9 @@
 const Order = require("../Models/Order")
 const Product = require("../Models/Product")
 const Cart = require("../Models/Cart")
+const ReturnRequest = require("../Models/ReturnRequest")
 const { isValidId, sendError } = require("../utils/http")
+const { sendOrderTransactionEmail } = require("../utils/mailer")
 
 const statusTimestamps = {
     shipped: "shippedAt",
@@ -10,17 +12,47 @@ const statusTimestamps = {
     cancelled: "cancelledAt"
 }
 
+const isAdminUser = (req) => req.user.role === "admin"
+
 const getOrders = async (req, res) => {
     try {
-        const { user, status } = req.query
-        const filter = { deletedAt: null }
+        const { user, status, paymentMethod, search, deleted } = req.query
+        let filter = {}
 
-        if (user) {
-            filter.user = user
+        if (deleted === "true" || status === "deleted") {
+            filter.deletedAt = { $ne: null }
+        } else if (status === "all") {
+            // all
+        } else {
+            filter.deletedAt = null
         }
 
-        if (status) {
+        if (isAdminUser(req)) {
+            if (user) {
+                filter.user = user
+            }
+        } else {
+            filter.user = req.user._id
+        }
+
+        if (status && status !== "all" && status !== "deleted") {
             filter.status = status
+        }
+
+        if (paymentMethod && paymentMethod !== "all") {
+            filter.paymentMethod = paymentMethod
+        }
+
+        if (search) {
+            if (isValidId(search)) {
+                filter._id = search
+            } else {
+                filter.$or = [
+                    { "shippingAddressSnapshot.recipientName": { $regex: search, $options: "i" } },
+                    { "shippingAddressSnapshot.contactNumber": { $regex: search, $options: "i" } },
+                    { "items.productNameSnapshot": { $regex: search, $options: "i" } }
+                ]
+            }
         }
 
         const orders = await Order.find(filter)
@@ -49,6 +81,10 @@ const getOrder = async (req, res) => {
             return res.status(404).json({ error: "Order not found" })
         }
 
+        if (!isAdminUser(req) && String(order.user._id) !== String(req.user._id)) {
+            return res.status(403).json({ error: "This order belongs to another account" })
+        }
+
         res.status(200).json(order)
     } catch (error) {
         sendError(res, error)
@@ -58,8 +94,9 @@ const getOrder = async (req, res) => {
 const createOrder = async (req, res) => {
     try {
         const { user, items, paymentMethod, shippingAddressSnapshot } = req.body || {}
+        const targetUser = isAdminUser(req) && user ? user : req.user._id
 
-        if (!isValidId(user)) {
+        if (!isValidId(targetUser)) {
             return res.status(400).json({ error: "Invalid user id" })
         }
 
@@ -103,7 +140,7 @@ const createOrder = async (req, res) => {
         }
 
         const order = await Order.create({
-            user,
+            user: targetUser,
             items: orderItems,
             paymentMethod,
             shippingAddressSnapshot
@@ -113,7 +150,9 @@ const createOrder = async (req, res) => {
             await Product.updateOne({ _id: item.product }, { $inc: { stock: -item.quantity } })
         }
 
-        await Cart.updateOne({ user }, { $set: { items: [] } })
+        await Cart.updateOne({ user: targetUser }, { $set: { items: [] } })
+
+        sendOrderTransactionEmail(order, "Your order has been placed successfully and is pending confirmation.").catch(console.error)
 
         res.status(201).json(order)
     } catch (error) {
@@ -130,21 +169,41 @@ const updateOrderStatus = async (req, res) => {
             return res.status(400).json({ error: "Invalid order id" })
         }
 
-        const updates = { status }
-        const timestampField = statusTimestamps[status]
+        const existingOrder = await Order.findById(id)
+        if (!existingOrder) {
+            return res.status(404).json({ error: "Order not found" })
+        }
 
-        if (timestampField) {
-            updates[timestampField] = new Date()
+        if (existingOrder.status === "completed") {
+            return res.status(400).json({ error: "Order has already been completed and cannot be modified." })
+        }
+
+        if (existingOrder.status === "cancelled") {
+            return res.status(400).json({ error: "Cancelled orders cannot be modified." })
+        }
+
+        const updates = {}
+        if (status) {
+            updates.status = status
+            const timestampField = statusTimestamps[status]
+            if (timestampField) {
+                updates[timestampField] = new Date()
+            }
+        }
+
+        if (req.body.restore === "true" || req.body.restore === true) {
+            updates.deletedAt = null
+            updates.deletedBy = null
         }
 
         const order = await Order.findOneAndUpdate(
-            { _id: id, deletedAt: null },
+            { _id: id },
             updates,
             { returnDocument: "after", runValidators: true }
         )
 
-        if (!order) {
-            return res.status(404).json({ error: "Order not found" })
+        if (status && status !== existingOrder.status) {
+            sendOrderTransactionEmail(order, `Transaction status updated to ${status.toUpperCase()} by admin.`).catch(console.error)
         }
 
         res.status(200).json(order)
@@ -153,7 +212,7 @@ const updateOrderStatus = async (req, res) => {
     }
 }
 
-const deleteOrder = async (req, res) => {
+const completeOrder = async (req, res) => {
     try {
         const { id } = req.params
 
@@ -161,20 +220,77 @@ const deleteOrder = async (req, res) => {
             return res.status(400).json({ error: "Invalid order id" })
         }
 
-        const order = await Order.findOneAndUpdate(
-            { _id: id, deletedAt: null },
-            { deletedAt: new Date(), deletedBy: req.body?.deletedBy ?? null },
-            { returnDocument: "after" }
-        )
-
+        const order = await Order.findOne({ _id: id, deletedAt: null })
         if (!order) {
             return res.status(404).json({ error: "Order not found" })
         }
 
-        res.status(200).json({ message: "Order deleted", order })
+        const isOwner = String(order.user) === String(req.user._id)
+        const isAdmin = req.user.role === "admin"
+        if (!isAdmin && !isOwner) {
+            return res.status(403).json({ error: "This order belongs to another account" })
+        }
+
+        if (order.status !== "delivered") {
+            return res.status(400).json({ error: "Orders can only be marked as completed after delivery." })
+        }
+
+        order.status = "completed"
+        order.completedAt = new Date()
+        await order.save()
+
+        sendOrderTransactionEmail(order, "Your order transaction has been completed. Thank you for shopping with FGP!").catch(console.error)
+
+        res.status(200).json({ message: "Order marked as completed", order })
     } catch (error) {
         sendError(res, error)
     }
+}
+
+const cancelOrder = async (req, res) => {
+    try {
+        const { id } = req.params
+
+        if (!isValidId(id)) {
+            return res.status(400).json({ error: "Invalid order id" })
+        }
+
+        const order = await Order.findOne({ _id: id, deletedAt: null })
+        if (!order) {
+            return res.status(404).json({ error: "Order not found" })
+        }
+
+        const isOwner = String(order.user) === String(req.user._id)
+        const isAdmin = req.user.role === "admin"
+        if (!isAdmin && !isOwner) {
+            return res.status(403).json({ error: "This order belongs to another account" })
+        }
+
+        if (order.status !== "pending") {
+            return res.status(400).json({ error: "Orders can only be cancelled while in pending status." })
+        }
+
+        order.status = "cancelled"
+        order.cancelledAt = new Date()
+        await order.save()
+
+        // Restore product inventory
+        for (const item of order.items) {
+            if (item.product) {
+                await Product.updateOne({ _id: item.product }, { $inc: { stock: item.quantity } })
+            }
+        }
+
+        sendOrderTransactionEmail(order, "Your order transaction has been cancelled.").catch(console.error)
+
+        res.status(200).json({ message: "Order cancelled successfully", order })
+    } catch (error) {
+        sendError(res, error)
+    }
+}
+
+const deleteOrder = async (req, res) => {
+    return res.status(403).json({ error: "Orders cannot be deleted once placed." })
 }
 
 module.exports = {
@@ -182,5 +298,7 @@ module.exports = {
     getOrder,
     createOrder,
     updateOrderStatus,
+    completeOrder,
+    cancelOrder,
     deleteOrder
 }

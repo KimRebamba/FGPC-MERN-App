@@ -7,9 +7,11 @@ import Loader from "../../components/Layout/Loader"
 import ErrorMessage from "../../components/Layout/ErrorMessage"
 import DataTable from "../../components/Table/DataTable"
 import StatusBadge from "../../components/Form/StatusBadge"
+import DetailModal from "../../components/Table/DetailModal"
 import { formatPrice } from "../../utils/formatPrice"
+import { resolveImageUrl } from "../../utils/resolveImageUrl"
 
-const emptyFilters = { search: "", category: "", isActive: "" }
+const emptyFilters = { search: "", category: "", status: "" }
 
 const Products = () => {
     const dispatch = useDispatch()
@@ -17,10 +19,12 @@ const Products = () => {
     const { items: categories } = useSelector((state) => state.categories)
 
     const [filters, setFilters] = useState(emptyFilters)
+    const [selectedProduct, setSelectedProduct] = useState(null)
 
     useEffect(() => {
-        dispatch(productActions.fetchAll())
-        dispatch(categoryActions.fetchAll())
+        dispatch(productActions.fetchAll(filters))
+        dispatch(categoryActions.fetchAll({ status: "all" }))
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dispatch])
 
     const handleFilterChange = (event) => {
@@ -37,41 +41,122 @@ const Products = () => {
 
     const handleReset = () => {
         setFilters(emptyFilters)
-        dispatch(productActions.fetchAll())
+        dispatch(productActions.fetchAll(emptyFilters))
     }
 
-    const handleDelete = (id) => {
-        if (window.confirm("Delete this product?")) {
-            dispatch(productActions.remove(id))
+    const handleDelete = async (id) => {
+        const res = await dispatch(productActions.remove(id))
+        if (res) {
+            dispatch(productActions.fetchAll(filters))
         }
     }
 
-    const rows = products.map((product) => ({
-        id: product._id,
-        name: product.name,
-        price: formatPrice(product.price),
-        stock: product.stock,
-        category: product.category?.name || "—",
-        brand: product.brand?.name || "—",
-        isActive: <StatusBadge value={product.isActive ? "active" : "inactive"} />
-    }))
+    const handleRestore = async (id) => {
+        const res = await dispatch(productActions.update(id, { restore: true }))
+        if (res) {
+            dispatch(productActions.fetchAll(filters))
+        }
+    }
+
+    const rows = products.map((product) => {
+        const isDeleted = Boolean(product.deletedAt)
+        const isOutOfStock = (product.stock || 0) <= 0
+
+        let statusBadgeValue = "inactive"
+        if (isDeleted) {
+            statusBadgeValue = "deleted"
+        } else if (isOutOfStock) {
+            statusBadgeValue = "out-of-stock"
+        } else if (product.isActive) {
+            statusBadgeValue = "active"
+        }
+
+        return {
+            id: product._id,
+            image: product.images?.find((img) => img.isPrimary)?.imagePath || product.images?.[0]?.imagePath || null,
+            name: product.name,
+            price: formatPrice(product.price),
+            stock: product.stock,
+            category: product.category?.name || "Uncategorized",
+            brand: product.brand?.name || "No Brand",
+            isDeleted,
+            isActive: <StatusBadge value={statusBadgeValue} />
+        }
+    })
 
     const columns = [
-        { key: "name", label: "Name" },
-        { key: "price", label: "Price" },
-        { key: "stock", label: "Stock" },
-        { key: "category", label: "Category" },
-        { key: "brand", label: "Brand" },
-        { key: "isActive", label: "Status" },
+        {
+            key: "image",
+            label: "Photo",
+            width: 80,
+            minWidth: 70,
+            render: (row) => {
+                const url = resolveImageUrl(row.image)
+                return url ? (
+                    <img
+                        src={url}
+                        alt={row.name}
+                        style={{ width: "44px", height: "44px", objectFit: "cover", border: "1px solid var(--border)" }}
+                    />
+                ) : (
+                    <span style={{ color: "var(--text-dim)" }}>—</span>
+                )
+            }
+        },
+        { key: "name", label: "Name", minWidth: 200, flex: 1.5 },
+        { key: "price", label: "Price", minWidth: 120 },
+        { key: "stock", label: "Stock", minWidth: 90 },
+        { key: "category", label: "Category", minWidth: 140 },
+        { key: "brand", label: "Brand", minWidth: 140 },
+        { key: "isActive", label: "Status", minWidth: 110 },
         {
             key: "actions",
             label: "Actions",
-            render: (row) => (
-                <div className="table-actions">
-                    <Link to={"/admin/products/" + row.id + "/edit"} className="table-link">Edit</Link>
-                    <button type="button" className="table-button" onClick={() => handleDelete(row.id)}>Delete</button>
-                </div>
-            )
+            width: 240,
+            minWidth: 230,
+            render: (row) => {
+                const fullItem = products.find((p) => p._id === row.id)
+                return (
+                    <div className="table-actions">
+                        <button
+                            type="button"
+                            className="secondary-button"
+                            style={{ padding: "5px 12px", fontSize: "13px" }}
+                            onClick={() => setSelectedProduct(fullItem)}
+                        >
+                            Details
+                        </button>
+                        {row.isDeleted ? (
+                            <button
+                                type="button"
+                                className="primary-button"
+                                style={{ padding: "5px 12px", fontSize: "13px" }}
+                                onClick={() => handleRestore(row.id)}
+                            >
+                                Restore
+                            </button>
+                        ) : (
+                            <>
+                                <Link
+                                    to={"/admin/products/" + row.id + "/edit"}
+                                    className="secondary-button"
+                                    style={{ padding: "5px 12px", fontSize: "13px" }}
+                                >
+                                    Edit
+                                </Link>
+                                <button
+                                    type="button"
+                                    className="danger-button"
+                                    style={{ padding: "5px 12px", fontSize: "13px" }}
+                                    onClick={() => handleDelete(row.id)}
+                                >
+                                    Delete
+                                </button>
+                            </>
+                        )}
+                    </div>
+                )
+            }
         }
     ]
 
@@ -81,7 +166,7 @@ const Products = () => {
                 <Link to="/admin/products/new" className="primary-button">New product</Link>
             </PageHeader>
 
-            <form className="filter-bar" onSubmit={handleFilterSubmit}>
+            <form className="filter-bar" onSubmit={handleFilterSubmit} style={{ marginBottom: "20px" }}>
                 <input
                     type="search"
                     name="search"
@@ -89,22 +174,26 @@ const Products = () => {
                     placeholder="Search by name"
                     value={filters.search}
                     onChange={handleFilterChange}
+                    style={{ maxWidth: "240px" }}
                 />
 
-                <select name="category" className="form-select" value={filters.category} onChange={handleFilterChange}>
+                <select name="category" className="form-select" value={filters.category} onChange={handleFilterChange} style={{ maxWidth: "200px" }}>
                     <option value="">All categories</option>
                     {categories.map((category) => (
                         <option key={category._id} value={category._id}>{category.name}</option>
                     ))}
                 </select>
 
-                <select name="isActive" className="form-select" value={filters.isActive} onChange={handleFilterChange}>
-                    <option value="">Any status</option>
-                    <option value="true">Active</option>
-                    <option value="false">Inactive</option>
+                <select name="status" className="form-select" value={filters.status} onChange={handleFilterChange} style={{ maxWidth: "210px" }}>
+                    <option value="">Status: Active & Inactive</option>
+                    <option value="active">Active only</option>
+                    <option value="inactive">Inactive only</option>
+                    <option value="out_of_stock">Out of Stock</option>
+                    <option value="deleted">Soft-Deleted (Trash)</option>
+                    <option value="all">All (including deleted)</option>
                 </select>
 
-                <button type="submit" className="secondary-button">Apply filters</button>
+                <button type="submit" className="primary-button">Apply</button>
                 <button type="button" className="secondary-button" onClick={handleReset}>Reset</button>
             </form>
 
@@ -116,6 +205,27 @@ const Products = () => {
             ) : (
                 <DataTable columns={columns} rows={rows} emptyMessage="No products match this view" />
             )}
+
+            {/* Document Details Modal */}
+            <DetailModal
+                title="Product Details"
+                data={selectedProduct ? {
+                    ID: selectedProduct._id,
+                    Name: selectedProduct.name,
+                    Description: selectedProduct.description || "—",
+                    Price: formatPrice(selectedProduct.price),
+                    Stock: selectedProduct.stock,
+                    Category: selectedProduct.category?.name || "Uncategorized",
+                    Brand: selectedProduct.brand?.name || "—",
+                    Status: selectedProduct.deletedAt ? "Soft-Deleted" : selectedProduct.stock <= 0 ? "Out of Stock" : selectedProduct.isActive ? "Active" : "Inactive",
+                    Deleted: selectedProduct.deletedAt ? new Date(selectedProduct.deletedAt).toLocaleString() : "No",
+                    ImagesCount: selectedProduct.images?.length || 0,
+                    Created: selectedProduct.createdAt ? new Date(selectedProduct.createdAt).toLocaleString() : "—",
+                    Updated: selectedProduct.updatedAt ? new Date(selectedProduct.updatedAt).toLocaleString() : "—"
+                } : null}
+                isOpen={Boolean(selectedProduct)}
+                onClose={() => setSelectedProduct(null)}
+            />
         </div>
     )
 }

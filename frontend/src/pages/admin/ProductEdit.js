@@ -30,11 +30,11 @@ const ProductEdit = () => {
         }
     }
 
-    if (loading && !product) {
+    if (loading || !product || product._id !== id) {
         return <Loader />
     }
 
-    if (!product) {
+    if (!product && error) {
         return (
             <div className="admin-page">
                 <PageHeader title="Edit product" />
@@ -50,16 +50,19 @@ const ProductEdit = () => {
         stock: product.stock ?? 0,
         category: product.category?._id || product.category || "",
         brand: product.brand?._id || product.brand || "",
-        isActive: product.isActive !== false,
-        imagePath: product.images?.[0]?.imagePath || ""
+        isActive: product.isActive !== false
     }
+
+    const existingImages = product.images?.map((image) => image.imagePath) || []
 
     return (
         <div className="admin-page">
             <PageHeader title="Edit product" description={product.name} />
 
             <ProductForm
+                key={product._id}
                 initialValues={initialValues}
+                existingImages={existingImages}
                 categories={categories}
                 brands={brands}
                 onSubmit={handleSubmit}

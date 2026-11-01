@@ -1,4 +1,3 @@
-import { getStoredToken, getStoredUser } from "../utils/authStorage"
 import {
     LOGIN_REQUEST,
     LOGIN_SUCCESS,
@@ -9,18 +8,18 @@ import {
     LOAD_USER_REQUEST,
     LOAD_USER_SUCCESS,
     LOAD_USER_FAIL,
+    PROFILE_REQUEST,
+    PROFILE_SUCCESS,
+    PROFILE_FAIL,
     LOGOUT,
     CLEAR_AUTH_ERROR
 } from "../constants/authConstants"
 
-const storedToken = getStoredToken()
-const storedUser = getStoredUser()
-
 const initialState = {
-    user: storedUser,
-    token: storedToken,
-    isAuthenticated: Boolean(storedToken && storedUser),
-    loading: false,
+    user: null,
+    isAuthenticated: false,
+    loading: true,
+    saving: false,
     error: null
 }
 
@@ -33,14 +32,7 @@ export const authReducer = (state = initialState, action) => {
 
         case LOGIN_SUCCESS:
         case REGISTER_SUCCESS:
-            return {
-                ...state,
-                loading: false,
-                error: null,
-                user: action.payload.user,
-                token: action.payload.token,
-                isAuthenticated: true
-            }
+            return { ...state, loading: false, error: null, user: action.payload, isAuthenticated: true }
 
         case LOAD_USER_SUCCESS:
             return { ...state, loading: false, error: null, user: action.payload, isAuthenticated: true }
@@ -50,10 +42,19 @@ export const authReducer = (state = initialState, action) => {
             return { ...state, loading: false, error: action.payload }
 
         case LOAD_USER_FAIL:
-            return { ...state, loading: false, error: action.payload, user: null, token: null, isAuthenticated: false }
+            return { ...state, loading: false, error: null, user: null, isAuthenticated: false }
+
+        case PROFILE_REQUEST:
+            return { ...state, saving: true, error: null }
+
+        case PROFILE_SUCCESS:
+            return { ...state, saving: false, user: action.payload }
+
+        case PROFILE_FAIL:
+            return { ...state, saving: false, error: action.payload }
 
         case LOGOUT:
-            return { ...state, user: null, token: null, isAuthenticated: false, loading: false, error: null }
+            return { ...state, user: null, isAuthenticated: false, loading: false, saving: false, error: null }
 
         case CLEAR_AUTH_ERROR:
             return { ...state, error: null }

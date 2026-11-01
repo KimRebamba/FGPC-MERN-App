@@ -2,20 +2,28 @@ const mongoose = require("mongoose")
 
 const Schema = mongoose.Schema
 
-const reviewImageSchema = new Schema({
-    imagePath: {
+const reviewReplySchema = new Schema({
+    reviewId: {
+        type: Schema.Types.ObjectId,
+        ref: "Review"
+    },
+    authorId: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+        required: true
+    },
+    authorRole: {
+        type: String,
+        enum: ["admin", "customer"],
+        default: "customer"
+    },
+    content: {
         type: String,
         required: true,
         trim: true
-    },
-    isPrimary: {
-        type: Boolean,
-        default: false
-    },
-    sortOrder: {
-        type: Number,
-        default: 0
     }
+}, {
+    timestamps: true
 })
 
 const reviewSchema = new Schema({
@@ -49,12 +57,8 @@ const reviewSchema = new Schema({
         type: String,
         default: ""
     },
-    isVerifiedPurchase: {
-        type: Boolean,
-        default: false
-    },
-    images: {
-        type: [reviewImageSchema],
+    replies: {
+        type: [reviewReplySchema],
         default: []
     },
     deletedAt: {

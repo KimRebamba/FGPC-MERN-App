@@ -7,6 +7,7 @@ import Loader from "../../components/Layout/Loader"
 import ErrorMessage from "../../components/Layout/ErrorMessage"
 import StatusBadge from "../../components/Form/StatusBadge"
 import { formatDate } from "../../utils/formatDate"
+import { formatPrice } from "../../utils/formatPrice"
 
 const returnStatuses = ["pending", "approved", "rejected", "completed", "cancelled"]
 const resolutions = ["refund", "replacement", "store_credit"]
@@ -87,7 +88,16 @@ const ReturnRequestDetails = () => {
                     <tbody>
                         {returnRequest.items.map((item) => (
                             <tr key={item._id} className="table-row">
-                                <td className="table-cell">{item.orderItemId}</td>
+                                <td className="table-cell">
+                                    <span style={{ fontWeight: 600, display: "block" }}>
+                                        {item.productNameSnapshot || ("Item #" + String(item.orderItemId).slice(-6).toUpperCase())}
+                                    </span>
+                                    {item.priceSnapshot && (
+                                        <span style={{ fontSize: "12px", color: "var(--accent)" }}>
+                                            {formatPrice(item.priceSnapshot)}
+                                        </span>
+                                    )}
+                                </td>
                                 <td className="table-cell">{item.quantity}</td>
                                 <td className="table-cell">{item.reason}</td>
                             </tr>

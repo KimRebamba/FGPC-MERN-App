@@ -6,18 +6,21 @@ const {
     getOrder,
     createOrder,
     updateOrderStatus,
-    deleteOrder
+    completeOrder,
+    cancelOrder
 } = require("../Controllers/orderController")
 const { protect, requireAdmin } = require("../middlewares/auth")
 
 router.post("/", protect, createOrder)
 
-router.get("/", protect, requireAdmin, getOrders)
+router.get("/", protect, getOrders)
 
-router.get("/:id", protect, requireAdmin, getOrder)
+router.get("/:id", protect, getOrder)
+
+router.patch("/:id/complete", protect, completeOrder)
+
+router.patch("/:id/cancel", protect, cancelOrder)
 
 router.patch("/:id/status", protect, requireAdmin, updateOrderStatus)
-
-router.delete("/:id", protect, requireAdmin, deleteOrder)
 
 module.exports = router

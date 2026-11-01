@@ -1,4 +1,17 @@
-const FormField = ({ label, name, type = "text", value, onChange, options, required = false, placeholder, rows }) => {
+const FormField = ({
+    label,
+    name,
+    type = "text",
+    value,
+    onChange,
+    onBlur,
+    options,
+    required = false,
+    placeholder,
+    rows,
+    error,
+    disabled = false
+}) => {
     if (type === "checkbox") {
         return (
             <div className="form-field form-field-checkbox">
@@ -10,21 +23,33 @@ const FormField = ({ label, name, type = "text", value, onChange, options, requi
                         className="form-checkbox"
                         checked={Boolean(value)}
                         onChange={onChange}
+                        onBlur={onBlur}
+                        disabled={disabled}
                     />
                     {label}
                 </label>
+                {error && <span className="field-error-text" style={{ color: "var(--danger)", fontSize: "13px", marginTop: "4px", display: "block" }}>{error}</span>}
             </div>
         )
     }
 
     return (
         <div className="form-field">
-            <label htmlFor={name} className="form-label">{label}</label>
+            <label htmlFor={name} className="form-label">{label}{required && " *"}</label>
 
             {type === "select" && (
-                <select id={name} name={name} className="form-select" value={value} onChange={onChange} required={required}>
+                <select
+                    id={name}
+                    name={name}
+                    className={`form-select ${error ? "input-error" : ""}`}
+                    value={value}
+                    onChange={onChange}
+                    onBlur={onBlur}
+                    required={required}
+                    disabled={disabled}
+                >
                     <option value="">Select {label.toLowerCase()}</option>
-                    {options.map((option) => (
+                    {options && options.map((option) => (
                         <option key={option.value} value={option.value}>{option.label}</option>
                     ))}
                 </select>
@@ -34,12 +59,14 @@ const FormField = ({ label, name, type = "text", value, onChange, options, requi
                 <textarea
                     id={name}
                     name={name}
-                    className="form-textarea"
+                    className={`form-textarea ${error ? "input-error" : ""}`}
                     value={value}
                     onChange={onChange}
+                    onBlur={onBlur}
                     placeholder={placeholder}
                     rows={rows || 4}
                     required={required}
+                    disabled={disabled}
                 />
             )}
 
@@ -48,12 +75,20 @@ const FormField = ({ label, name, type = "text", value, onChange, options, requi
                     id={name}
                     name={name}
                     type={type}
-                    className="form-input"
+                    className={`form-input ${error ? "input-error" : ""}`}
                     value={value}
                     onChange={onChange}
+                    onBlur={onBlur}
                     placeholder={placeholder}
                     required={required}
+                    disabled={disabled}
                 />
+            )}
+
+            {error && (
+                <span className="field-error-text" style={{ color: "var(--danger)", fontSize: "13px", marginTop: "4px", display: "block", fontWeight: 500 }}>
+                    {error}
+                </span>
             )}
         </div>
     )
