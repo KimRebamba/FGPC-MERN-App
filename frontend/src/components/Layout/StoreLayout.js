@@ -5,6 +5,7 @@ import { useAuth } from "../../hooks/useAuth"
 import { fetchCart } from "../../actions/cartActions"
 import { resolveImageUrl } from "../../utils/resolveImageUrl"
 import StoreFooter from "./StoreFooter"
+import { fgpLogo } from "../../assets"
 
 const StoreLayout = () => {
     const dispatch = useDispatch()
@@ -31,7 +32,7 @@ const StoreLayout = () => {
             <header className="store-header">
                 {/* Logo */}
                 <Link to="/" className="store-brand">
-                    <img src="/fgp-logo.png" alt="FGP" />
+                    <img src={fgpLogo} alt="FGP" />
                 </Link>
 
                 {/* Nav */}

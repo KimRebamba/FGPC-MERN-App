@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { productActions } from "../../actions/resourceActions"
 import ProductCard from "../../components/Product/ProductCard"
+import { fgpcLogo, keanu } from "../../assets"
 
 const Storefront = () => {
     const dispatch = useDispatch()
@@ -52,7 +53,7 @@ const Storefront = () => {
                     <div className="storefront-section-header" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "28px" }}>
                         <div>
                             <h2 className="storefront-section-title" style={{ fontSize: "28px", margin: "0 0 6px 0" }}>
-                                Featured Motorcycle Gear
+                                Featured Gear
                             </h2>
                             <p style={{ color: "var(--text-muted)", fontSize: "15px", margin: 0 }}>
                                 Showing {((page - 1) * itemsPerPage) + 1}–{Math.min(page * itemsPerPage, sortedProducts.length)} of {sortedProducts.length} items (Page {page} of {totalPages})
@@ -119,8 +120,9 @@ const Storefront = () => {
 
             {/* ---- About Us / Origin Story Section ---- */}
             <section className="about-us-section">
-                <div className="about-logo-wrapper">
-                    <img src="/fgpc-logo.png" alt="FGP Moto" className="about-logo" />
+                <div className="about-logo-wrapper" style={{ display: "flex", flexDirection: "column", gap: "24px", alignItems: "center" }}>
+                    <img src={fgpcLogo} alt="FGP Moto" className="about-logo" />
+
                 </div>
 
                 <div className="about-content">

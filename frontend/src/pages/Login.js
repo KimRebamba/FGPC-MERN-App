@@ -6,6 +6,7 @@ import { useFormik } from "formik"
 import * as Yup from "yup"
 import { auth, googleProvider } from "../firebase"
 import { clearAuthError, loginUser, loginWithGoogle } from "../actions/authActions"
+import { fgpLogoSmall } from "../assets"
 
 // SVG icons
 const EyeIcon = () => (
@@ -102,7 +103,7 @@ const Login = () => {
             <div className="auth-card">
                 {/* Logo */}
                 <div className="auth-logo">
-                    <img src="/fgp-logo-small.png" alt="FGP" />
+                    <img src={fgpLogoSmall} alt="FGP" />
                 </div>
 
                 {/* Heading */}

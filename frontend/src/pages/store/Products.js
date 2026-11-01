@@ -190,7 +190,7 @@ const Products = () => {
             ) : (
                 <>
                     <p className="product-grid-count">
-                        Showing {displayedProducts.length} of {count} gear item(s) found (Infinite Scroll Enabled)
+                        Showing {displayedProducts.length} of {count} gear item(s) found
                     </p>
                     <div className="product-grid">
                         {displayedProducts.map((product) => (

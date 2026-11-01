@@ -1,10 +1,12 @@
+import { fgpcLogoSmall } from "../../assets"
+
 const StoreFooter = () => {
     return (
         <footer className="store-footer">
             <div className="footer-grid">
                 {/* Brand */}
                 <div className="footer-brand">
-                    <img src="/fgpc-logo-small.png" alt="FGP" className="footer-logo" />
+                    <img src={fgpcLogoSmall} alt="FGP" className="footer-logo" />
                     <p className="footer-tagline">
                         FGP, abbreviation for Full Gear Pogi Club, is a motorcycle riding gear store that sells top-of-the-line motorcycle riding gear.
                         Located in the Philippines. Ride safe, mga pogi.

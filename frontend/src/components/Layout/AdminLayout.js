@@ -1,6 +1,7 @@
 import { NavLink, Outlet, useNavigate, Link } from "react-router-dom"
 import { useAuth } from "../../hooks/useAuth"
 import { resolveImageUrl } from "../../utils/resolveImageUrl"
+import { fgpLogo } from "../../assets"
 
 const navigationItems = [
     { to: "/admin", label: "Dashboard", end: true },
@@ -30,7 +31,7 @@ const AdminLayout = () => {
             <nav className="admin-navbar">
                 {/* Logo */}
                 <Link to="/admin" className="admin-navbar-logo">
-                    <img src="/fgp-logo.png" alt="FGP" />
+                    <img src={fgpLogo} alt="FGP" />
                 </Link>
 
                 {/* Nav links */}

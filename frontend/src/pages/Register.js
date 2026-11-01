@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { useFormik } from "formik"
 import * as Yup from "yup"
 import { clearAuthError, registerUser } from "../actions/authActions"
+import { fgpLogoSmall } from "../assets"
 
 const EyeIcon = () => (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -89,7 +90,7 @@ const Register = () => {
             <div className="auth-card">
                 {/* Logo */}
                 <div className="auth-logo">
-                    <img src="/fgp-logo-small.png" alt="FGP" />
+                    <img src={fgpLogoSmall} alt="FGP" />
                 </div>
 
                 {/* Heading */}
