@@ -12,6 +12,7 @@ node_modules/
 .env.*
 !.env.example
 !.env.sample
+**/render-env.txt
 serviceAccountKey.json
 **/serviceAccountKey.json
 
@@ -87,5 +88,5 @@ test-results/
 .claw/
 .zwork/
 
-.prof-code/
+prof-code/
 .tmp/
