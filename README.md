@@ -20,6 +20,10 @@
   A full-stack e-commerce web application built with the MERN stack for a made-up motorcycle gear shop named <strong>Full Gear Pogi Club (FGPC)</strong>. It gives riders a modern web shop to browse helmets, jackets, pants, boots, and armor, submit product reviews with profanity filtering, manage orders and return requests, and provides administrators with a complete dashboard for inventory management, sales analytics, and automated email receipts with PDF generation.
 </p>
 
+<p align="center">
+  Try it here: <a href="https://fgpc-frontend.onrender.com/">https://fgpc-frontend.onrender.com/</a>
+</p>
+
 ## Demo
 
 ![Admin demo](admin-demo.gif)
@@ -35,53 +39,39 @@
 
 The backend server starts from [`backend/server.js`](backend/server.js) on port 8000 (or `PORT` from environment). The frontend runs as a Single Page Application (SPA) built using Create React App.
 
-## Course Requirements Implemented
-
-This project fulfills all requirements specified in the course syllabus:
-
-- **MP1 (Product/Service CRUD & Datatables - 20pts):** Full CRUD for products, categories, and brands. Material UI DataGrid tables with sorting, pagination, and multi-photo uploads (`backend/utils/uploads.js`, `frontend/src/pages/admin/Products.js`).
-- **MP2 (Filter Functions - 20pts):** Price filter, category filter, ratings filter, and review search filter by product name and rating score (`frontend/src/pages/store/Products.js`, `frontend/src/pages/admin/Reviews.js`).
-- **MP3 (Review & Ratings - 20pts):** Verified purchase check so only users who bought and received the gear can review and rate it. Customers can edit their own reviews, and admins can moderate and delete reviews (`backend/Controllers/reviewController.js`, `frontend/src/components/Review/ReviewList.js`).
-- **Term Test Lab (Transaction Completion & Email Receipts - 30pts):** Customers can mark delivered orders as completed. Admins update order statuses. Automated emails notify the customer with an itemized product list, subtotals, grand total, and an attached PDF receipt generated dynamically via PDFKit (`backend/utils/mailer.js`, `backend/utils/receiptGenerator.js`).
-- **Unit 1 (Bad Words Filter & Form Validation - 20pts):** Profanity filter that masks foul words with asterisks using `bad-words`. Schema-based form validation on user registration, login, profile updates, and product forms using `yup` and `formik` (`backend/Controllers/reviewController.js`, `frontend/src/components/Product/ProductForm.js`, `frontend/src/pages/Login.js`).
-- **Unit 2 (UI Design & Material UI - 20pts):** Custom dark-mode UI with hairline borders, Coolvetica font, neon accents, and Material UI (`@mui/material`, `@mui/x-data-grid`) for interactive administrative datatables (`frontend/src/index.css`, `frontend/src/components/Table/DataTable.js`).
-- **Quiz 2 (Sales Analytics Charts - 15pts):** Admin sales analytics with date range picker (Last 7 Days, Last 30 Days, This Year, All Time) and a toggle between Line chart and Bar chart. Counts only delivered orders while deducting returned items (`frontend/src/pages/admin/Dashboard.js`).
-- **Quiz 3 (Pagination & Infinite Scroll - 15pts):** Homepage best-seller pagination by 4s (`frontend/src/pages/store/Storefront.js`) and infinite scroll on the main products catalog page (`frontend/src/pages/store/Products.js`).
-- **Quiz 4 (Google / Gmail Authentication - 15pts):** One-click Google sign-in using Firebase Authentication popup on the frontend and token verification via Firebase Admin SDK on the backend (`frontend/src/pages/Login.js`, `backend/config/firebase.js`).
-
-## Packages Used & Why We Used Them
+## Packages I Used
 
 ### Backend Packages
 
-- **`express`** - The core web framework we used to set up the server, define REST endpoints, and handle HTTP request/response lifecycles.
-- **`mongoose`** - Connects our Node.js app to MongoDB and lets us define clear schemas for products, users, orders, reviews, and carts.
-- **`dotenv`** - Loads secret keys and environment variables (like database connection strings, JWT secret, and email credentials) from the `.env` file.
-- **`cors`** - Enables Cross-Origin Resource Sharing so our React frontend can talk to our Express backend without the browser blocking the requests.
-- **`cookie-parser`** - Parses incoming cookies from the client so we can read session cookies.
-- **`jsonwebtoken`** - Generates and verifies JWT tokens to keep users logged in securely and protect private routes.
-- **`bcryptjs`** - Hashes user passwords with salt before saving them to MongoDB so plain text passwords are never stored in the database.
-- **`multer`** - Middleware that processes incoming `multipart/form-data` uploads when users upload product images or profile photos.
-- **`cloudinary`** - Cloud image hosting service where uploaded pictures are stored and served via CDN URLs so we don't have to rely solely on local disk storage.
-- **`nodemailer`** - Handles sending transactional emails (like order status updates and receipts) to customers via Mailtrap SMTP.
-- **`pdfkit`** - Creates clean, downloadable PDF receipts programmatically in memory so we can attach them to customer transaction emails.
-- **`bad-words`** - Scans customer reviews and discussion replies and replaces swear words with asterisks to keep user reviews clean.
-- **`validator`** - Validates strings (like checking if an email is formatted properly) before creating new database documents.
-- **`firebase-admin`** - Verifies Google authentication tokens on the backend when someone logs in using their Gmail account.
+- **`express`** 
+- **`mongoose`** 
+- **`dotenv`** 
+- **`cors`** 
+- **`cookie-parser`** 
+- **`jsonwebtoken`** 
+- **`bcryptjs`** 
+- **`multer`** 
+- **`cloudinary`** 
+- **`nodemailer`** 
+- **`pdfkit`** 
+- **`bad-words`** 
+- **`validator`** 
+- **`firebase-admin`** 
 
 ### Frontend Packages
 
-- **`react` & `react-dom`** - The primary library for rendering our UI components, managing component states, and rendering the DOM.
-- **`react-router-dom`** - Client-side router that switches pages (e.g. `/`, `/products`, `/admin`, `/login`) instantly without reloading the whole browser.
-- **`redux` & `react-redux`** - Centralized store that keeps track of global app data like products, current cart items, logged-in user, and orders.
-- **`redux-thunk`** - Middleware that allows our Redux action creators to make asynchronous API calls and dispatch results to reducers.
-- **`axios`** - Makes HTTP requests from React to our Express API. We configured an interceptor to automatically attach our `Bearer` token to headers.
-- **`@mui/material` & `@mui/x-data-grid`** - Material UI library used for rich datatables in the admin panel with built-in sorting, filtering, and row pagination.
-- **`@emotion/react` & `@emotion/styled`** - Style engines required by Material UI to inject component CSS rules.
-- **`formik`** - Simplifies form handling by managing values, change events, blur events, and form submission states without boilerplate.
-- **`yup`** - Defines schema rules (like minimum length, required fields, and email format) to validate form fields alongside Formik.
-- **`react-hook-form`** - Lightweight form library installed for flexible form control and performance.
-- **`recharts`** - Renders the interactive Line and Bar charts in the admin dashboard for tracking delivered net sales over custom date ranges.
-- **`firebase`** - Client SDK used to trigger the Google Sign-In popup window and get the user's ID token.
+- **`react` & `react-dom`** 
+- **`react-router-dom`** 
+- **`redux` & `react-redux`** 
+- **`redux-thunk`** 
+- **`axios`** 
+- **`@mui/material` & `@mui/x-data-grid`** 
+- **`@emotion/react` & `@emotion/styled`** 
+- **`formik`** 
+- **`yup`** 
+- **`react-hook-form`** 
+- **`recharts`** 
+- **`firebase`** 
 
 ## Features
 
@@ -101,7 +91,7 @@ This project fulfills all requirements specified in the course syllabus:
   - Verified purchase restriction: customer can only rate and review gear they ordered and received.
   - Customers can edit their existing reviews and star ratings.
   - Automated profanity filter masking inappropriate words using `bad-words`.
-  - Nested discussion replies with profile picture circles and role badges (`🛡️ Store Admin` vs `👤 Customer`).
+  - Nested discussion replies with profile picture circles and role badges (`🛡️ Admin` vs `👤 Customer`).
 - **Shopping Cart & Checkout:**
   - Persistent shopping cart supporting both guests and signed-in customers.
   - Quantity controls with live stock boundary limits.
