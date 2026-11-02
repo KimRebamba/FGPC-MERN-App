@@ -27,13 +27,15 @@ const ProductCard = ({ product }) => {
         <div className={"product-card" + (isOutOfStock ? " product-card--out-of-stock" : "")}>
             {/* Image */}
             <div style={{ position: "relative" }}>
-                {image ? (
-                    <div className="product-card-image">
-                        <img src={image} alt={product.name} />
-                    </div>
-                ) : (
-                    <div className="product-card-placeholder">No image</div>
-                )}
+                <Link to={"/products/" + product._id} style={{ display: "block", textDecoration: "none" }}>
+                    {image ? (
+                        <div className="product-card-image">
+                            <img src={image} alt={product.name} />
+                        </div>
+                    ) : (
+                        <div className="product-card-placeholder">No image</div>
+                    )}
+                </Link>
                 {isOutOfStock && (
                     <span className="out-of-stock-pill">
                         Out of stock
@@ -55,7 +57,9 @@ const ProductCard = ({ product }) => {
                     )}
                 </div>
 
-                <h2 className="product-card-name">{product.name}</h2>
+                <Link to={"/products/" + product._id} style={{ textDecoration: "none", color: "inherit" }}>
+                    <h2 className="product-card-name">{product.name}</h2>
+                </Link>
 
                 <p className="product-card-brand">{product.brand?.name || "No Brand"}</p>
 

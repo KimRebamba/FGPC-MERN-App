@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { Link } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux"
 import { productActions } from "../../actions/resourceActions"
 import ProductCard from "../../components/Product/ProductCard"
@@ -42,9 +43,9 @@ const Storefront = () => {
                         Open from 7:00 AM to 6:00 PM.
                     </p>
                     <div className="hero-actions">
-                        <a href="/products" className="secondary-button" style={{ padding: "12px 28px", fontSize: "16px" }}>
+                        <Link to="/products" className="secondary-button" style={{ padding: "12px 28px", fontSize: "16px" }}>
                             Browse gears
-                        </a>
+                        </Link>
                     </div>
                 </div>
             </section>
@@ -61,9 +62,9 @@ const Storefront = () => {
                                 Showing {((page - 1) * itemsPerPage) + 1}–{Math.min(page * itemsPerPage, sortedProducts.length)} of {sortedProducts.length} items (Page {page} of {totalPages})
                             </p>
                         </div>
-                        <a href="/products" className="secondary-button" style={{ padding: "10px 22px", fontSize: "14px" }}>
+                        <Link to="/products" className="secondary-button" style={{ padding: "10px 22px", fontSize: "14px" }}>
                             View full catalog →
-                        </a>
+                        </Link>
                     </div>
 
                     <div className="product-grid" style={{ marginBottom: "32px" }}>
