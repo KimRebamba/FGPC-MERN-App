@@ -92,8 +92,8 @@ const sendOrderTransactionEmail = async (order, updateMessage = "") => {
         const htmlContent = `
         <div style="background-color: #0A0A0A; color: #FFFFFF; font-family: Arial, sans-serif; max-width: 650px; margin: 0 auto; padding: 25px; border: 1px solid #222222;">
             <div style="border-bottom: 2px solid #C6FF00; padding-bottom: 15px; margin-bottom: 20px;">
-                <h1 style="color: #FFFFFF; font-size: 24px; margin: 0; letter-spacing: 1px;">FGP MOTORCYCLE GEAR</h1>
-                <p style="color: #C6FF00; font-size: 13px; margin: 4px 0 0 0; text-transform: uppercase; letter-spacing: 2px;">Order Transaction Update</p>
+                <h1 style="color: #FFFFFF; font-size: 24px; margin: 0; letter-spacing: 1px;">FULL GEAR POGI CLUB SHOP</h1>
+                <p style="color: #C6FF00; font-size: 13px; margin: 4px 0 0 0; text-transform: uppercase; letter-spacing: 2px;">Order Transaction PDF</p>
             </div>
 
             <p style="font-size: 16px; color: #EEEEEE;">Hello <strong>${recipientName}</strong>,</p>
@@ -108,7 +108,7 @@ const sendOrderTransactionEmail = async (order, updateMessage = "") => {
                 </p>
             </div>
 
-            <h3 style="color: #FFFFFF; font-size: 16px; margin: 25px 0 12px 0; border-bottom: 1px solid #333333; padding-bottom: 8px;">Purchased Items & Breakdown</h3>
+            <h3 style="color: #FFFFFF; font-size: 16px; margin: 25px 0 12px 0; border-bottom: 1px solid #333333; padding-bottom: 8px;">Purchased Items</h3>
             <table style="width: 100%; border-collapse: collapse; font-size: 14px; margin-bottom: 20px;">
                 <thead>
                     <tr style="background-color: #1E1E1E;">
@@ -133,12 +133,12 @@ const sendOrderTransactionEmail = async (order, updateMessage = "") => {
 
             <div style="background-color: #121212; border-left: 3px solid #C6FF00; padding: 12px; margin-top: 25px;">
                 <p style="margin: 0; font-size: 13px; color: #AAAAAA;">
-                    An official transaction receipt PDF is attached to this email for your records and warranty validation.
+                    An official transaction receipt PDF is attached to this email for your purchases.
                 </p>
             </div>
 
             <div style="text-align: center; margin-top: 30px; padding-top: 15px; border-top: 1px solid #222222; font-size: 12px; color: #666666;">
-                <p style="margin: 0;">FGP Motorcycle Gear &bull; Precision equipment for riders</p>
+                <p style="margin: 0;">Thank you for shopping at FGPC Motorcycle Gear Shop</p>
             </div>
         </div>
         `

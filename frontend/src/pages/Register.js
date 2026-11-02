@@ -97,7 +97,7 @@ const Register = () => {
                 {/* Heading */}
                 <div className="auth-heading">
                     <h1 className="auth-title">Create account</h1>
-                    <p className="auth-subtitle">Join FGP and start shopping premium moto gear</p>
+                    <p className="auth-subtitle">Join FGP and start shopping!</p>
                 </div>
 
                 {/* Messages */}

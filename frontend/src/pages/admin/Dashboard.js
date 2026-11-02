@@ -264,7 +264,7 @@ const Dashboard = () => {
         <div className="admin-page">
             <PageHeader
                 title={"Welcome back, " + (user?.firstName || "Admin")}
-                description="Motorcycle gear performance and metrics overview."
+                description="Motorcycle Gear Shop Summary & Overview"
             >
                 <Link to="/" className="secondary-button" style={{ padding: "8px 16px" }}>
                     Go to store
