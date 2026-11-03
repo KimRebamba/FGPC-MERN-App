@@ -123,7 +123,7 @@ const ReviewItem = ({ review, currentUser, onReplySubmitted }) => {
                 <p className="review-description">{review.description}</p>
             )}
 
-            {/* Replies thread */}
+            
             {Array.isArray(review.replies) && review.replies.length > 0 && (
                 <div className="review-replies-list">
                     {review.replies.map((reply, idx) => {
@@ -163,7 +163,7 @@ const ReviewItem = ({ review, currentUser, onReplySubmitted }) => {
                 </div>
             )}
 
-            {/* Reply toggle & form */}
+            
             <div style={{ marginTop: "14px" }}>
                 {!replyOpen ? (
                     currentUser ? (

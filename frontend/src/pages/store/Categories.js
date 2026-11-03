@@ -22,7 +22,6 @@ const Categories = () => {
         navigate("/products?category=" + categoryId)
     }
 
-    // Client-side search filter
     const filtered = categories.filter((cat) =>
         cat.name.toLowerCase().includes(search.toLowerCase()) ||
         (cat.description || "").toLowerCase().includes(search.toLowerCase())
@@ -30,10 +29,9 @@ const Categories = () => {
 
     return (
         <div className="categories-page">
-            {/* Header */}
+            
             <div className="categories-page-header">
                 <h1 className="products-page-title">Shop by Category</h1>
-
 
                 <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
                     <input
@@ -47,12 +45,12 @@ const Categories = () => {
                 </div>
             </div>
 
-            {/* Messages */}
+            
             <div className="notification-slot">
                 <ErrorMessage message={error} />
             </div>
 
-            {/* Grid */}
+            
             {loading ? (
                 <Loader />
             ) : filtered.length === 0 ? (
@@ -64,7 +62,7 @@ const Categories = () => {
 
                         return (
                             <div key={category._id} className="category-card">
-                                {/* Image */}
+                                
                                 {imageUrl ? (
                                     <div className="category-card-image">
                                         <img src={imageUrl} alt={category.name} />
@@ -75,7 +73,7 @@ const Categories = () => {
                                     </div>
                                 )}
 
-                                {/* Body */}
+                                
                                 <div className="category-card-body">
                                     <h2 className="category-card-name">{category.name}</h2>
                                     {category.description && (

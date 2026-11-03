@@ -52,15 +52,12 @@ const Profile = () => {
     const dispatch = useDispatch()
     const { user, saving, error } = useAuth()
 
-    // Tabs: "info" | "password" | "addresses"
     const [activeTab, setActiveTab] = useState("info")
 
-    // ---- Personal info state ----
     const [avatar, setAvatar] = useState(null)
     const [infoMessage, setInfoMessage] = useState(null)
     const [infoError, setInfoError] = useState(null)
 
-    // ---- Password state ----
     const [oldPassword, setOldPassword] = useState("")
     const [newPassword, setNewPassword] = useState("")
     const [confirmNewPassword, setConfirmNewPassword] = useState("")
@@ -72,7 +69,6 @@ const Profile = () => {
     const [passwordMessage, setPasswordMessage] = useState(null)
     const [passwordError, setPasswordError] = useState(null)
 
-    // ---- Address state ----
     const [addresses, setAddresses] = useState(user.addresses || [])
     const [newAddress, setNewAddress] = useState(emptyAddress)
     const [addressError, setAddressError] = useState(null)
@@ -80,7 +76,6 @@ const Profile = () => {
     const avatarUrl = resolveImageUrl(user.profilePath)
     const initials = (user.firstName?.[0] || user.email?.[0] || "U").toUpperCase()
 
-    // ---- Formik: personal info validation ----
     const infoFormik = useFormik({
         initialValues: {
             firstName: user.firstName || "",
@@ -112,7 +107,6 @@ const Profile = () => {
         }
     })
 
-    // ---- Handlers: password ----
     const handleVerifyOldPassword = async () => {
         setPasswordError(null)
 
@@ -169,7 +163,6 @@ const Profile = () => {
         }
     }
 
-    // ---- Handlers: addresses ----
     const handleAddressChange = (event) => {
         const { name, value } = event.target
         setNewAddress((prev) => ({ ...prev, [name]: value }))
@@ -211,7 +204,7 @@ const Profile = () => {
 
     return (
         <div className="profile-page">
-            {/* Summary header */}
+            
             <div className="profile-summary">
                 {avatarUrl ? (
                     <img src={avatarUrl} alt={user.firstName} className="profile-avatar" />
@@ -225,7 +218,7 @@ const Profile = () => {
                 </div>
             </div>
 
-            {/* Tabs */}
+            
             <div className="profile-tabs">
                 <button
                     type="button"
@@ -250,7 +243,7 @@ const Profile = () => {
                 </button>
             </div>
 
-            {/* ---- Tab: Personal info ---- */}
+            
             {activeTab === "info" && (
                 <div className="profile-section">
                     <div className="notification-slot">
@@ -308,7 +301,7 @@ const Profile = () => {
                 </div>
             )}
 
-            {/* ---- Tab: Change password ---- */}
+            
             {activeTab === "password" && (
                 <div className="profile-section">
                     <div className="notification-slot">
@@ -316,7 +309,7 @@ const Profile = () => {
                         {passwordMessage && <p className="form-success">{passwordMessage}</p>}
                     </div>
 
-                    {/* Step 1: Verify old password */}
+                    
                     {!passwordVerified && (
                         <div className="admin-form">
                             <p style={{ fontSize: "14px", color: "var(--text-muted)" }}>
@@ -358,7 +351,7 @@ const Profile = () => {
                         </div>
                     )}
 
-                    {/* Step 2: Set new password */}
+                    
                     {passwordVerified && (
                         <form className="admin-form" onSubmit={handlePasswordSubmit} noValidate>
                             <p className="form-success" style={{ marginBottom: "8px" }}>
@@ -423,14 +416,14 @@ const Profile = () => {
                 </div>
             )}
 
-            {/* ---- Tab: Addresses ---- */}
+            
             {activeTab === "addresses" && (
                 <div className="profile-section">
                     <div className="notification-slot">
                         <ErrorMessage message={addressError} />
                     </div>
 
-                    {/* Existing addresses */}
+                    
                     {addresses.length === 0 ? (
                         <p className="empty-state">No saved addresses yet.</p>
                     ) : (
@@ -457,7 +450,7 @@ const Profile = () => {
                         </ul>
                     )}
 
-                    {/* Add new address */}
+                    
                     <h3 className="section-title" style={{ marginTop: "16px" }}>Add new address</h3>
 
                     <div className="admin-form">

@@ -44,12 +44,10 @@ const AdminProfile = () => {
 
     const [activeTab, setActiveTab] = useState("info")
 
-    // Personal info
     const [avatar, setAvatar] = useState(null)
     const [infoMessage, setInfoMessage] = useState(null)
     const [infoError, setInfoError] = useState(null)
 
-    // Password
     const [oldPassword, setOldPassword] = useState("")
     const [newPassword, setNewPassword] = useState("")
     const [confirmNewPassword, setConfirmNewPassword] = useState("")
@@ -154,7 +152,7 @@ const AdminProfile = () => {
         <div className="admin-page">
             <PageHeader title="My Profile" description="Manage your admin account settings" />
 
-            {/* Summary */}
+            
             <div className="profile-summary">
                 {avatarUrl ? (
                     <img src={avatarUrl} alt={user.firstName} className="profile-avatar" />
@@ -168,7 +166,7 @@ const AdminProfile = () => {
                 </div>
             </div>
 
-            {/* Tabs */}
+            
             <div className="profile-tabs">
                 <button
                     type="button"
@@ -186,7 +184,7 @@ const AdminProfile = () => {
                 </button>
             </div>
 
-            {/* ---- Tab: Info ---- */}
+            
             {activeTab === "info" && (
                 <div className="profile-section">
                     <div className="notification-slot">
@@ -243,7 +241,7 @@ const AdminProfile = () => {
                 </div>
             )}
 
-            {/* ---- Tab: Password ---- */}
+            
             {activeTab === "password" && (
                 <div className="profile-section">
                     <div className="notification-slot">

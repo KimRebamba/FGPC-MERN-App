@@ -253,7 +253,7 @@ const Reviews = () => {
                 <DataTable columns={columns} rows={rows} emptyMessage="No reviews found matching filter criteria" />
             )}
 
-            {/* Admin Reply Modal */}
+            
             {replyingReview && (
                 <div className="modal-backdrop" onClick={() => setReplyingReview(null)}>
                     <div
@@ -304,7 +304,7 @@ const Reviews = () => {
                 </div>
             )}
 
-            {/* Review Details & Replies Modal */}
+            
             {selectedReview && (
                 <div className="modal-backdrop" onClick={() => setSelectedReview(null)}>
                     <div
@@ -331,7 +331,7 @@ const Reviews = () => {
                             </button>
                         </div>
 
-                        {/* Customer Review Card */}
+                        
                         <div style={{ background: "rgba(255, 255, 255, 0.02)", border: "1px solid var(--border)", padding: "20px", marginBottom: "24px" }}>
                             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "10px", marginBottom: "10px" }}>
                                 <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
@@ -357,7 +357,7 @@ const Reviews = () => {
                             </p>
                         </div>
 
-                        {/* Replies Section (Clearly visible with Admin Delete capability) */}
+                        
                         <div>
                             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "14px", borderBottom: "1px solid var(--border)", paddingBottom: "10px" }}>
                                 <h3 style={{ fontSize: "18px", fontWeight: 700, color: "var(--accent)", margin: 0 }}>

@@ -1,4 +1,3 @@
-// Maps a status string to a styled badge.
 const StatusBadge = ({ value }) => {
     if (!value && value !== false) return null
 

@@ -303,7 +303,7 @@ const Users = () => {
             <ErrorMessage message={formError || error} />
             {message && <p className="form-success">{message}</p>}
 
-            {/* Create User Form */}
+            
             {showForm && (
                 <section className="admin-section" style={{ background: "var(--surface)", border: "1px solid var(--border)", padding: "28px" }}>
                     <h2 className="section-title">Create New User</h2>
@@ -389,7 +389,7 @@ const Users = () => {
                 <DataTable columns={columns} rows={rows} emptyMessage="No users match this view" />
             )}
 
-            {/* User Details Modal */}
+            
             <DetailModal
                 title="User Details"
                 data={selectedUser ? {

@@ -207,7 +207,7 @@ const Products = () => {
                 <DataTable columns={columns} rows={rows} emptyMessage="No products match this view" />
             )}
 
-            {/* Document Details Modal */}
+            
             <DetailModal
                 title="Product Details"
                 data={selectedProduct ? {

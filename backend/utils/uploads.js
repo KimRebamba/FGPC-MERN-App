@@ -24,7 +24,6 @@ const uploadSingleImage = async (file, folder = "general") => {
                 folder: `fgp/${folder}`,
                 resource_type: "image"
             })
-            // Clean up temporary local file
             fs.unlink(file.path, () => {})
             return result.secure_url
         } catch (error) {

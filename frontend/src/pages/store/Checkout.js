@@ -89,7 +89,7 @@ const Checkout = () => {
 
                     <ErrorMessage message={localError || error} />
 
-                    {/* Saved address selector if user has addresses */}
+                    
                     {user?.addresses && user.addresses.length > 0 && (
                         <div className="saved-addresses-selector" style={{ marginBottom: "28px" }}>
                             <label className="form-label" style={{ marginBottom: "12px", display: "block" }}>

@@ -2,7 +2,6 @@ import { Link } from "react-router-dom"
 import { formatPrice } from "../../utils/formatPrice"
 import { resolveImageUrl } from "../../utils/resolveImageUrl"
 
-// Star rating display helper
 const Stars = ({ rating, max = 5 }) => {
     const stars = []
 
@@ -25,7 +24,7 @@ const ProductCard = ({ product }) => {
 
     return (
         <div className={"product-card" + (isOutOfStock ? " product-card--out-of-stock" : "")}>
-            {/* Image */}
+            
             <div style={{ position: "relative" }}>
                 <Link to={"/products/" + product._id} style={{ display: "block", textDecoration: "none" }}>
                     {image ? (
@@ -43,7 +42,7 @@ const ProductCard = ({ product }) => {
                 )}
             </div>
 
-            {/* Body */}
+            
             <div className="product-card-body">
                 <div className="product-card-meta">
                     <span className="product-card-category">

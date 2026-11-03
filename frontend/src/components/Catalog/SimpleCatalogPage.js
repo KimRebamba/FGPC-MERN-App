@@ -226,7 +226,7 @@ const SimpleCatalogPage = ({ title, description, stateKey, actions, imageField, 
                 </button>
             </PageHeader>
 
-            {/* Filter and Search Bar */}
+            
             <div className="filter-bar" style={{ marginBottom: "20px", display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "center" }}>
                 <input
                     type="text"
@@ -253,7 +253,7 @@ const SimpleCatalogPage = ({ title, description, stateKey, actions, imageField, 
             <ErrorMessage message={error} />
             {message && <p className="form-success">{message}</p>}
 
-            {/* Form collapsible */}
+            
             {showForm && (
                 <section className="admin-section" style={{ background: "var(--surface)", border: "1px solid var(--border)", padding: "28px" }}>
                     <h2 className="section-title">{editingId ? "Edit " + singularLabel : "New " + singularLabel}</h2>
@@ -306,7 +306,7 @@ const SimpleCatalogPage = ({ title, description, stateKey, actions, imageField, 
                 <DataTable columns={columns} rows={rows} emptyMessage={"No " + title.toLowerCase() + " yet"} />
             )}
 
-            {/* Document Details Modal */}
+            
             <DetailModal
                 title={title + " Details"}
                 data={selectedItem ? {

@@ -13,7 +13,6 @@ const getCategories = async (req, res) => {
         if (status === "deleted" || deleted === "true") {
             filter.deletedAt = { $ne: null }
         } else if (status === "all") {
-            // all categories including deleted
         } else {
             filter.deletedAt = null
         }

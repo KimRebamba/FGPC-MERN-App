@@ -31,12 +31,12 @@ const AdminLayout = () => {
     return (
         <div className="admin-layout">
             <nav className="admin-navbar">
-                {/* Logo */}
+                
                 <Link to="/admin" className="admin-navbar-logo" onClick={() => setAdminMenuOpen(false)}>
                     <img src={fgpLogo} alt="FGP" />
                 </Link>
 
-                {/* Mobile Admin Actions (Store link & Burger Toggle) */}
+                
                 <div className="admin-mobile-header-actions">
                     <Link to="/" className="secondary-button" style={{ padding: "6px 12px", fontSize: "12px" }}>
                         Store
@@ -63,9 +63,9 @@ const AdminLayout = () => {
                     </button>
                 </div>
 
-                {/* Nav & Right wrapper (Desktop normal / Mobile drawer) */}
+                
                 <div className={`admin-nav-wrapper ${adminMenuOpen ? "admin-nav-wrapper--open" : ""}`}>
-                    {/* Nav links */}
+                    
                     <div className="admin-navbar-nav">
                         {navigationItems.map((item) => (
                             <NavLink
@@ -82,7 +82,7 @@ const AdminLayout = () => {
                         ))}
                     </div>
 
-                    {/* Right side: go to store + profile + logout */}
+                    
                     <div className="admin-navbar-right">
                         <Link to="/" className="secondary-button admin-desktop-store-btn" style={{ padding: "6px 14px", fontSize: "12px" }}>
                             Store

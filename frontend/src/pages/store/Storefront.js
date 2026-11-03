@@ -17,7 +17,6 @@ const Storefront = () => {
         dispatch(productActions.fetchAll({ isActive: true }))
     }, [dispatch])
 
-    // Products list sorted with in-stock items first
     const sortedProducts = [...products].sort((a, b) => {
         const aIn = (a.stock || 0) > 0 ? 1 : 0
         const bIn = (b.stock || 0) > 0 ? 1 : 0
@@ -30,7 +29,7 @@ const Storefront = () => {
 
     return (
         <div className="storefront">
-            {/* ---- Hero ---- */}
+            
             <section className="hero">
                 <div className="hero-content">
                     <h1 className="hero-title">
@@ -50,7 +49,7 @@ const Storefront = () => {
                 </div>
             </section>
 
-            {/* ---- Best Sellers / Featured with Pagination by 4s ---- */}
+            
             {!loading && sortedProducts.length > 0 && (
                 <section className="storefront-section" style={{ padding: "60px 40px", maxWidth: "1250px", margin: "0 auto" }}>
                     <div className="storefront-section-header" style={{ display: "flex", alignItems: "start", justifyContent: "space-between", marginBottom: "28px" }}>
@@ -73,7 +72,7 @@ const Storefront = () => {
                         ))}
                     </div>
 
-                    {/* Homepage Pagination Controls */}
+                    
                     {totalPages > 1 && (
                         <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "10px", marginTop: "24px" }}>
                             <button
@@ -121,7 +120,7 @@ const Storefront = () => {
                 </section>
             )}
 
-            {/* ---- About Us / Origin Story Section ---- */}
+            
             <section className="about-us-section">
                 <div className="about-logo-wrapper" style={{ display: "flex", flexDirection: "column", gap: "24px", alignItems: "center" }}>
                     <img src={fgpcLogo} alt="FGP Moto" className="about-logo" />

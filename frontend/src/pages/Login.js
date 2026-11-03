@@ -8,7 +8,6 @@ import { auth, googleProvider } from "../firebase"
 import { clearAuthError, loginUser, loginWithGoogle } from "../actions/authActions"
 import { fgpLogoSmall } from "../assets"
 
-// SVG icons
 const EyeIcon = () => (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
@@ -103,18 +102,18 @@ const Login = () => {
     return (
         <div className="auth-page">
             <div className="auth-card">
-                {/* Logo */}
+                
                 <div className="auth-logo">
                     <img src={fgpLogoSmall} alt="FGP" />
                 </div>
 
-                {/* Heading */}
+                
                 <div className="auth-heading">
                     <h1 className="auth-title">Welcome back</h1>
                     <p className="auth-subtitle">Sign in to shop or manage the store</p>
                 </div>
 
-                {/* Messages */}
+                
                 <div className="notification-slot">
                     {location.state?.message && (
                         <p className="form-success">{location.state.message}</p>
@@ -124,7 +123,7 @@ const Login = () => {
                     )}
                 </div>
 
-                {/* Form */}
+                
                 <form className="auth-form" onSubmit={formik.handleSubmit} noValidate>
                     <div className="form-field">
                         <label htmlFor="email" className="form-label">Email</label>
@@ -195,12 +194,12 @@ const Login = () => {
                     </button>
                 </form>
 
-                {/* Divider */}
+                
                 <div className="auth-divider">
                     <span>or continue with</span>
                 </div>
 
-                {/* Google Sign-in */}
+                
                 <button
                     type="button"
                     className="google-button"
@@ -212,7 +211,7 @@ const Login = () => {
                     <span>Sign in with Google</span>
                 </button>
 
-                {/* Footer link */}
+                
                 <p className="auth-footer-text" style={{ fontSize: "14px", marginTop: "24px" }}>
                     Don't have an account? <Link to="/register" style={{ color: "var(--accent)", fontWeight: 600 }}>Create account</Link>
                 </p>

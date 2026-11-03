@@ -143,7 +143,7 @@ const CustomerOrderDetails = () => {
 
     return (
         <div className="order-details-page" style={{ maxWidth: "1200px", margin: "0 auto", padding: "60px 40px" }}>
-            {/* Back button */}
+            
             <div style={{ marginBottom: "28px" }}>
                 <Link
                     to="/activity"
@@ -154,7 +154,7 @@ const CustomerOrderDetails = () => {
                 </Link>
             </div>
 
-            {/* Header */}
+            
             <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", flexWrap: "wrap", gap: "24px", borderBottom: "1px solid var(--border)", paddingBottom: "24px", marginBottom: "32px" }}>
                 <div>
                     <span style={{ fontSize: "14px", letterSpacing: "0.15em", textTransform: "uppercase", color: "var(--accent)", display: "block", marginBottom: "8px", fontWeight: 600 }}>
@@ -182,7 +182,7 @@ const CustomerOrderDetails = () => {
             {actionSuccess && <p className="form-success" style={{ marginBottom: "24px", fontSize: "16px", padding: "14px 20px" }}>{actionSuccess}</p>}
             {actionError && <p className="form-error" style={{ marginBottom: "24px", fontSize: "16px", padding: "14px 20px" }}>{actionError}</p>}
 
-            {/* Order Action Banner for Customer */}
+            
             {order.status === "delivered" && (
                 <div style={{ background: "rgba(198, 255, 0, 0.08)", border: "1px solid var(--accent)", padding: "24px 30px", marginBottom: "36px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "20px" }}>
                     <div>
@@ -235,7 +235,7 @@ const CustomerOrderDetails = () => {
                 </div>
             )}
 
-            {/* Visual Step Tracker (for active orders) */}
+            
             {order.status !== "cancelled" && order.status !== "refunded" && (
                 <div className="order-progress-tracker" style={{ background: "var(--surface)", border: "1px solid var(--border)", padding: "28px 36px", marginBottom: "36px" }}>
                     <p style={{ fontSize: "14px", letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--text-muted)", marginBottom: "20px", fontWeight: 600 }}>
@@ -271,9 +271,9 @@ const CustomerOrderDetails = () => {
                 </div>
             )}
 
-            {/* Main content grid */}
+            
             <div className="customer-order-details-layout" style={{ display: "grid", gridTemplateColumns: "1.6fr 1fr", gap: "40px", alignItems: "start" }}>
-                {/* Left: Items list */}
+                
                 <div style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
                     <div style={{ background: "var(--surface)", border: "1px solid var(--border)", padding: "32px" }}>
                         <h2 className="section-title" style={{ fontSize: "22px", marginBottom: "24px", borderBottom: "1px solid var(--border)", paddingBottom: "14px" }}>
@@ -287,14 +287,12 @@ const CustomerOrderDetails = () => {
                                 const subtotal = Number(item.priceSnapshot) * item.quantity
                                 const isReturningThis = returnItemId === item._id
 
-                                // Check if user already reviewed this item
                                 const existingReview = (reviews || []).find((rev) => {
                                     const matchOrder = String(rev.order?._id || rev.order) === String(order._id)
                                     const matchProduct = String(rev.product?._id || rev.product) === String(productId)
                                     return matchOrder && matchProduct
                                 })
 
-                                // Check if user already filed a return request for this item
                                 const existingReturn = (returns || []).find((ret) => {
                                     const matchOrder = String(ret.order?._id || ret.order) === String(order._id)
                                     if (!matchOrder) return false
@@ -349,9 +347,9 @@ const CustomerOrderDetails = () => {
                                             </div>
                                         </div>
 
-                                        {/* Activity state container (Reviews & Returns) */}
+                                        
                                         <div style={{ background: "var(--surface-2)", padding: "20px", border: "1px solid var(--border)", display: "flex", flexDirection: "column", gap: "16px" }}>
-                                            {/* Review Section */}
+                                            
                                             {existingReview ? (
                                                 <div style={{ background: "var(--bg)", border: "1px solid var(--border)", padding: "18px" }}>
                                                     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "10px", marginBottom: "8px" }}>
@@ -393,7 +391,7 @@ const CustomerOrderDetails = () => {
                                                 />
                                             ) : null}
 
-                                            {/* Return Section */}
+                                            
                                             {existingReturn ? (
                                                 <div style={{ background: "var(--bg)", border: "1px solid var(--border)", padding: "18px" }}>
                                                     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "12px", marginBottom: "10px" }}>
@@ -501,9 +499,9 @@ const CustomerOrderDetails = () => {
                     </div>
                 </div>
 
-                {/* Right: Order Summary, Shipping & Payment */}
+                
                 <div style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
-                    {/* Financial Summary */}
+                    
                     <div style={{ background: "var(--surface)", border: "1px solid var(--border)", padding: "28px" }}>
                         <h2 className="section-title" style={{ fontSize: "20px", marginBottom: "20px", borderBottom: "1px solid var(--border)", paddingBottom: "12px" }}>
                             Payment Summary
@@ -533,7 +531,7 @@ const CustomerOrderDetails = () => {
                         </div>
                     </div>
 
-                    {/* Shipping Address */}
+                    
                     <div style={{ background: "var(--surface)", border: "1px solid var(--border)", padding: "28px" }}>
                         <h2 className="section-title" style={{ fontSize: "20px", marginBottom: "20px", borderBottom: "1px solid var(--border)", paddingBottom: "12px" }}>
                             Shipping Destination

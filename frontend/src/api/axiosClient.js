@@ -5,7 +5,6 @@ const api = axios.create({
     withCredentials: true
 })
 
-// Automatically attach Bearer token to all outgoing requests
 api.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem("fgp_token")

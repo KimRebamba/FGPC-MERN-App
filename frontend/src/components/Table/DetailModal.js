@@ -3,7 +3,6 @@ import { resolveImageUrl } from "../../utils/resolveImageUrl"
 const DetailModal = ({ title = "Details", data, isOpen, onClose }) => {
     if (!isOpen || !data) return null
 
-    // Format keys and values nicely
     const entries = Object.entries(data).filter(([key]) => key !== "raw" && !key.startsWith("__"))
 
     return (
@@ -20,7 +19,6 @@ const DetailModal = ({ title = "Details", data, isOpen, onClose }) => {
                     <table className="modal-table">
                         <tbody>
                             {entries.map(([key, value]) => {
-                                // Don't show complex react elements or functions
                                 if (typeof value === "function") return null
 
                                 const label = key
@@ -39,7 +37,6 @@ const DetailModal = ({ title = "Details", data, isOpen, onClose }) => {
                                         <img src={url} alt={key} style={{ maxHeight: "120px", objectFit: "contain", border: "1px solid var(--border)" }} />
                                     ) : value
                                 } else if (typeof value === "object" && !Array.isArray(value) && value.$$typeof) {
-                                    // React element
                                     content = value
                                 } else if (typeof value === "object") {
                                     content = <pre style={{ whiteSpace: "pre-wrap", fontSize: "13px", color: "var(--text-muted)" }}>{JSON.stringify(value, null, 2)}</pre>

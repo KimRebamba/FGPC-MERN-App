@@ -2,18 +2,11 @@ const nodemailer = require("nodemailer")
 const User = require("../Models/User")
 const { generateOrderReceiptPdf } = require("./receiptGenerator")
 
-/**
- * Check whether Mailtrap email sending is enabled.
- * Can be toggled via MAILTRAP_ENABLED=true/false in .env
- */
 const isMailtrapEnabled = () => {
     const val = process.env.MAILTRAP_ENABLED
     return String(val).toLowerCase() === "true"
 }
 
-/**
- * Create Mailtrap SMTP transporter
- */
 const getTransporter = () => {
     return nodemailer.createTransport({
         host: process.env.MAILTRAP_HOST || "sandbox.smtp.mailtrap.io",
@@ -25,11 +18,6 @@ const getTransporter = () => {
     })
 }
 
-/**
- * Send transaction details update email to customer with attached PDF receipt.
- * @param {Object} order - The updated order
- * @param {string} updateMessage - Description of status change (e.g. "Order marked as paid")
- */
 // [prof-requirements: Term Test Lab - Email customer updated transaction details with products list, subtotal, grand total (5pts) & PDF receipt (10pts)]
 const sendOrderTransactionEmail = async (order, updateMessage = "") => {
     if (!isMailtrapEnabled()) {
@@ -79,7 +67,6 @@ const sendOrderTransactionEmail = async (order, updateMessage = "") => {
 
         const orderCode = order._id.toString().slice(-6).toUpperCase()
 
-        // Generate PDF Receipt
         let pdfBuffer = null
         try {
             pdfBuffer = await generateOrderReceiptPdf(order)

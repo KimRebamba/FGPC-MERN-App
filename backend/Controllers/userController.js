@@ -26,7 +26,6 @@ const getUsers = async (req, res) => {
         if (deleted === "true" || status === "deleted") {
             filter.deletedAt = { $ne: null }
         } else if (status === "all") {
-            // all
         } else {
             filter.deletedAt = null
         }

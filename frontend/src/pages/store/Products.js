@@ -40,7 +40,6 @@ const Products = () => {
         dispatch(productActions.fetchAll(query))
     }, [dispatch])
 
-    // Load URL params (category or search)
     useEffect(() => {
         const params = new URLSearchParams(location.search)
         const cat = params.get("category") || ""
@@ -62,7 +61,6 @@ const Products = () => {
         dispatch(brandActions.fetchAll({ isActive: true }))
     }, [dispatch, location.search, fetchFiltered])
 
-    // Sort products with in-stock first
     const sortedProducts = useMemo(() => {
         return [...products].sort((a, b) => {
             const aIn = (a.stock || 0) > 0 ? 1 : 0
@@ -72,7 +70,6 @@ const Products = () => {
         })
     }, [products])
 
-    // Reset visible count when products change
     useEffect(() => {
         setVisibleCount(6)
     }, [products])
@@ -115,11 +112,11 @@ const Products = () => {
 
     return (
         <div className="products-page">
-            {/* Header */}
+            
             <div className="products-page-header">
                 <h1 className="products-page-title">Catalog</h1>
 
-                {/* Filter bar */}
+                
                 <form className="products-filter-bar" onSubmit={handleSubmit} noValidate>
                     <input
                         type="search"
@@ -178,12 +175,12 @@ const Products = () => {
                 </form>
             </div>
 
-            {/* Messages */}
+            
             <div className="notification-slot">
                 <ErrorMessage message={error} />
             </div>
 
-            {/* Grid */}
+            
             {loading ? (
                 <Loader />
             ) : products.length === 0 ? (
@@ -199,7 +196,7 @@ const Products = () => {
                         ))}
                     </div>
 
-                    {/* Infinite Scroll Footer indicator */}
+                    
                     {visibleCount < sortedProducts.length ? (
                         <div style={{ textAlign: "center", padding: "40px 0" }}>
                             <p style={{ color: "var(--text-muted)", fontSize: "14px", marginBottom: "12px" }}>

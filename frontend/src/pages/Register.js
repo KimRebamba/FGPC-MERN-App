@@ -89,25 +89,25 @@ const Register = () => {
     return (
         <div className="auth-page">
             <div className="auth-card">
-                {/* Logo */}
+                
                 <div className="auth-logo">
                     <img src={fgpLogoSmall} alt="FGP" />
                 </div>
 
-                {/* Heading */}
+                
                 <div className="auth-heading">
                     <h1 className="auth-title">Create account</h1>
                     <p className="auth-subtitle">Join FGP and start shopping!</p>
                 </div>
 
-                {/* Messages */}
+                
                 <div className="notification-slot">
                     {displayError && (
                         <p className="form-error">{displayError}</p>
                     )}
                 </div>
 
-                {/* Form */}
+                
                 <form className="auth-form" onSubmit={formik.handleSubmit} noValidate>
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
                         <div className="form-field">
@@ -256,7 +256,7 @@ const Register = () => {
                     </button>
                 </form>
 
-                {/* Footer links */}
+                
                 <p className="auth-footer" style={{ fontSize: "16px", marginTop: "20px" }}>
                     Already have an account?{" "}
                     <Link to="/login" className="auth-link">Sign in</Link>

@@ -27,7 +27,6 @@ import {
     ResponsiveContainer
 } from "recharts"
 
-// Helper: Build returned item lookup map
 const buildReturnMap = (returnRequests = []) => {
     const map = {}
     returnRequests.forEach((rr) => {
@@ -44,7 +43,6 @@ const buildReturnMap = (returnRequests = []) => {
     return map
 }
 
-// Derive sales within filtered date range: ONLY delivered products that are not returned
 const buildFilteredSales = (orders, returnMap, startDate, endDate) => {
     const map = {}
     const start = startDate ? new Date(startDate) : null
@@ -58,7 +56,6 @@ const buildFilteredSales = (orders, returnMap, startDate, endDate) => {
         if (start && orderDate < start) return
         if (end && orderDate > end) return
 
-        // Format label
         const key = orderDate.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "2-digit" })
 
         const netTotal = order.items.reduce((sum, item) => {
@@ -78,7 +75,6 @@ const buildFilteredSales = (orders, returnMap, startDate, endDate) => {
     return entries
 }
 
-// Derive product sales: ONLY delivered units that are not returned
 const buildProductSales = (orders, returnMap, startDate, endDate) => {
     const map = {}
     const start = startDate ? new Date(startDate) : null
@@ -106,7 +102,6 @@ const buildProductSales = (orders, returnMap, startDate, endDate) => {
         .map(([name, units]) => ({ name, units }))
 }
 
-// Derive customer sales: top customers by delivered spending
 const buildCustomerSales = (orders, returnMap, startDate, endDate) => {
     const map = {}
     const start = startDate ? new Date(startDate) : null
@@ -135,7 +130,6 @@ const buildCustomerSales = (orders, returnMap, startDate, endDate) => {
         .map(([name, total]) => ({ name, total: Number(total.toFixed(2)) }))
 }
 
-// Custom tooltip for recharts
 const ChartTooltip = ({ active, payload, label }) => {
     if (!active || !payload || !payload.length) return null
 
@@ -169,10 +163,9 @@ const Dashboard = () => {
     const returnRequests = useSelector((state) => state.returnRequests)
     const reviews = useSelector((state) => state.reviews)
 
-    // Date range & chart type state
     const [startDate, setStartDate] = useState("")
     const [endDate, setEndDate] = useState("")
-    const [chartType, setChartType] = useState("line") // "line" | "bar"
+    const [chartType, setChartType] = useState("line")
 
     useEffect(() => {
         dispatch(productActions.fetchAll())
@@ -187,7 +180,6 @@ const Dashboard = () => {
         return orders.items.filter((o) => o.status === "delivered" || o.status === "completed")
     }, [orders.items])
 
-    // Net sales: only count delivered orders, excluding returned items
     const totalNetSales = useMemo(() => {
         return deliveredOrders.reduce((total, order) => {
             const netOrderTotal = order.items.reduce((sum, item) => {
@@ -271,7 +263,7 @@ const Dashboard = () => {
                 </Link>
             </PageHeader>
 
-            {/* Stat cards */}
+            
             <div className="stat-grid" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))" }}>
                 {stats.map((stat) => (
                     <Link key={stat.label} to={stat.to} className="stat-card">
@@ -281,7 +273,7 @@ const Dashboard = () => {
                 ))}
             </div>
 
-            {/* Date Range Filter Bar for Sales Charts */}
+            
             <div style={{
                 background: "var(--surface)",
                 border: "1px solid var(--border)",
@@ -301,7 +293,7 @@ const Dashboard = () => {
                         </p>
                     </div>
 
-                    {/* Chart Style Toggle (Line vs Bar) */}
+                    
                     <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                         <span style={{ fontSize: "14px", color: "var(--text-muted)" }}>Chart Type:</span>
                         <button
@@ -363,9 +355,9 @@ const Dashboard = () => {
                 </div>
             </div>
 
-            {/* Charts */}
+            
             <div className="dashboard-charts">
-                {/* Main sales revenue chart (Line or Bar chart based on toggle) */}
+                
                 <div className="chart-card chart-full">
                     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "8px" }}>
                         <p className="chart-card-title" style={{ margin: 0 }}>
@@ -415,7 +407,7 @@ const Dashboard = () => {
                     )}
                 </div>
 
-                {/* Product sales bar chart */}
+                
                 <div className="chart-card">
                     <p className="chart-card-title">Top Products by Delivered Units</p>
                     {productSales.length === 0 ? (
@@ -443,7 +435,7 @@ const Dashboard = () => {
                     )}
                 </div>
 
-                {/* Customer sales bar chart */}
+                
                 <div className="chart-card">
                     <p className="chart-card-title">Top Customers by Delivered Spending</p>
                     {customerSales.length === 0 ? (
@@ -472,7 +464,7 @@ const Dashboard = () => {
                 </div>
             </div>
 
-            {/* Recent orders table */}
+            
             <section className="admin-section">
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                     <h2 className="section-title">Latest orders</h2>

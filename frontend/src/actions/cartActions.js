@@ -22,7 +22,6 @@ const writeGuestCart = (cart) => {
     try {
         localStorage.setItem(GUEST_CART_KEY, JSON.stringify(cart))
     } catch {
-        // ignore
     }
 }
 
@@ -38,7 +37,6 @@ export const fetchCart = (userId) => async (dispatch) => {
     try {
         const { data } = await api.get("/carts/" + userId)
 
-        // Check if there was guest cart to merge
         const guestCart = readGuestCart()
         if (guestCart.items && guestCart.items.length > 0) {
             for (const item of guestCart.items) {

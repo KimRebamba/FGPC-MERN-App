@@ -8,12 +8,10 @@ import ProtectedRoute from "./components/Route/ProtectedRoute"
 import AdminLayout from "./components/Layout/AdminLayout"
 import StoreLayout from "./components/Layout/StoreLayout"
 
-// Auth pages
 import Login from "./pages/Login"
 import Register from "./pages/Register"
 import NotFound from "./pages/NotFound"
 
-// Store pages
 import Storefront from "./pages/store/Storefront"
 import Categories from "./pages/store/Categories"
 import Products from "./pages/store/Products"
@@ -24,7 +22,6 @@ import MyActivity from "./pages/store/MyActivity"
 import CustomerOrderDetails from "./pages/store/CustomerOrderDetails"
 import Profile from "./pages/store/Profile"
 
-// Admin pages
 import Dashboard from "./pages/admin/Dashboard"
 import AdminProducts from "./pages/admin/Products"
 import ProductCreate from "./pages/admin/ProductCreate"
@@ -75,14 +72,13 @@ const App = () => {
         <Router>
             <TitleAndFaviconManager />
             <Routes>
-                {/* ---- Store (public + protected) ---- */}
+
                 <Route element={<StoreLayout />}>
                     <Route index element={<Storefront />} />
                     <Route path="categories" element={<Categories />} />
                     <Route path="products" element={<Products />} />
                     <Route path="products/:id" element={<ProductDetails />} />
 
-                    {/* Cart does NOT require auth — guest sees login redirect on add-to-cart */}
                     <Route path="cart" element={<Cart />} />
                     <Route path="checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
                     <Route path="activity" element={<ProtectedRoute><MyActivity /></ProtectedRoute>} />
@@ -92,11 +88,9 @@ const App = () => {
                     <Route path="*" element={<NotFound />} />
                 </Route>
 
-                {/* ---- Auth pages ---- */}
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
 
-                {/* ---- Admin (admin-only) ---- */}
                 <Route
                     path="/admin"
                     element={

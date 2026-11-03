@@ -5,7 +5,7 @@ const StoreFooter = () => {
     return (
         <footer className="store-footer">
             <div className="footer-grid">
-                {/* Brand */}
+                
                 <div className="footer-brand">
                     <Link to="/" style={{ display: "inline-block" }}>
                         <img src={fgpcLogoSmall} alt="FGP" className="footer-logo" />
@@ -16,7 +16,7 @@ const StoreFooter = () => {
                     </p>
                 </div>
 
-                {/* Shop links */}
+                
                 <div>
                     <p className="footer-col-title">Shop</p>
                     <div className="footer-links">
@@ -25,7 +25,7 @@ const StoreFooter = () => {
                     </div>
                 </div>
 
-                {/* Account links */}
+                
                 <div>
                     <p className="footer-col-title">Account</p>
                     <div className="footer-links">

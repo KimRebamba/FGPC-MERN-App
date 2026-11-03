@@ -365,7 +365,6 @@ const cancelOrder = async (req, res) => {
             order.cancelledAt = new Date()
             await order.save(sessionOpt)
 
-            // Restore product inventory within transaction
             for (const item of order.items) {
                 if (item.product) {
                     await Product.updateOne(

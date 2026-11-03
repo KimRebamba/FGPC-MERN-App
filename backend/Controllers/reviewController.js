@@ -38,7 +38,6 @@ const getReviews = async (req, res) => {
 
         if (search && search.trim()) {
             const queryText = search.trim()
-            // Find products matching product name search
             const matchingProducts = await Product.find({
                 name: { $regex: queryText, $options: "i" }
             }).select("_id")
@@ -261,7 +260,6 @@ const addReviewReply = async (req, res) => {
 
         const authorRole = req.user.role === "admin" ? "admin" : "customer"
 
-        // Mask bad words in reply content
         const cleanContent = maskBadWords(replyContent)
 
         review.replies.push({

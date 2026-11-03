@@ -1,12 +1,6 @@
 const PDFDocument = require("pdfkit")
 
-/**
- * Generate a PDF receipt buffer for an order.
- * @param {Object} order - Populated Mongoose order document or plain object
- * @returns {Promise<Buffer>}
- */
 // [prof-requirements: Term Test Lab - Attach a PDF receipt on the email (10pts)]
-// Uses pdfkit to generate formatted receipt with order items, subtotals, grand total, and shipping details
 const generateOrderReceiptPdf = (order) => {
     return new Promise((resolve, reject) => {
         try {
@@ -20,12 +14,10 @@ const generateOrderReceiptPdf = (order) => {
             const address = order.shippingAddressSnapshot || {}
             const items = order.items || []
 
-            // Primary colors: Dark motorcycle theme
             const primaryColor = "#0A0A0A"
             const accentColor = "#669900"
             const mutedColor = "#666666"
 
-            // Header Banner
             doc.rect(40, 40, 515, 60).fill(primaryColor)
             doc.fillColor("#FFFFFF")
                 .fontSize(22)
@@ -38,7 +30,6 @@ const generateOrderReceiptPdf = (order) => {
 
             doc.fillColor(primaryColor)
 
-            // Order Metadata Box
             doc.rect(40, 115, 515, 80).strokeColor("#DDDDDD").stroke()
             doc.fontSize(10).font("Helvetica-Bold").text("ORDER DETAILS", 55, 125)
 
@@ -53,13 +44,11 @@ const generateOrderReceiptPdf = (order) => {
             doc.text(new Date(order.createdAt || Date.now()).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" }), 160, 156)
             doc.text((order.paymentMethod || "COD").toUpperCase(), 160, 170)
 
-            // Status block on right side
             doc.font("Helvetica").fontSize(9).fillColor(mutedColor)
             doc.text("Current Status:", 340, 142)
             doc.font("Helvetica-Bold").fontSize(12).fillColor(accentColor)
             doc.text((order.status || "PENDING").toUpperCase(), 340, 156)
 
-            // Customer Destination Box
             doc.rect(40, 205, 515, 80).strokeColor("#DDDDDD").stroke()
             doc.font("Helvetica-Bold").fontSize(10).fillColor(primaryColor).text("SHIPPING DESTINATION", 55, 215)
 
@@ -81,7 +70,6 @@ const generateOrderReceiptPdf = (order) => {
             ].filter(Boolean).join(", ")
             doc.font("Helvetica").text(addressLine || "N/A", 130, 260, { width: 400 })
 
-            // Items Table
             let y = 305
             doc.rect(40, y, 515, 24).fill("#F3F3F3")
             doc.fillColor(primaryColor).font("Helvetica-Bold").fontSize(9)
@@ -99,7 +87,6 @@ const generateOrderReceiptPdf = (order) => {
                 const subtotal = priceNum * qtyNum
                 grandTotal += subtotal
 
-                // Alternate row background
                 if (index % 2 === 1) {
                     doc.rect(40, y - 4, 515, 22).fill("#FAFAFA")
                 }
@@ -113,7 +100,6 @@ const generateOrderReceiptPdf = (order) => {
                 y += 22
             })
 
-            // Summary section
             y += 10
             doc.rect(40, y, 515, 1).strokeColor("#DDDDDD").stroke()
             y += 15
@@ -136,7 +122,6 @@ const generateOrderReceiptPdf = (order) => {
             doc.fillColor("#C6FF00")
             doc.text("PHP " + grandTotal.toLocaleString("en-US", { minimumFractionDigits: 2 }), 465, y + 4, { width: 75, align: "right" })
 
-            // Footer
             y = 740
             doc.rect(40, y, 515, 1).strokeColor("#DDDDDD").stroke()
             doc.font("Helvetica").fontSize(8).fillColor(mutedColor)

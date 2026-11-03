@@ -18,7 +18,6 @@ const getProducts = async (req, res) => {
         if (status === "deleted" || deleted === "true") {
             filter.deletedAt = { $ne: null }
         } else if (status === "all") {
-            // Include both active and soft-deleted items
         } else {
             filter.deletedAt = null
         }
@@ -85,7 +84,6 @@ const getProducts = async (req, res) => {
             .populate("brand", "name isActive deletedAt")
             .sort({ createdAt: -1 })
 
-        // Aggregate review ratings
         const reviewStats = await Review.aggregate([
             { $match: { deletedAt: null } },
             {
@@ -141,7 +139,6 @@ const getProducts = async (req, res) => {
             enrichedProducts = enrichedProducts.filter((p) => p.averageRating >= threshold)
         }
 
-        // Put out of stock items at the very last
         enrichedProducts.sort((a, b) => {
             const aInStock = (a.stock || 0) > 0 ? 1 : 0
             const bInStock = (b.stock || 0) > 0 ? 1 : 0

@@ -10,7 +10,6 @@ import ReviewList from "../../components/Review/ReviewList"
 import { formatPrice } from "../../utils/formatPrice"
 import { resolveImageUrl } from "../../utils/resolveImageUrl"
 
-// Stars display
 const Stars = ({ rating, max = 5 }) => {
     const stars = []
 
@@ -23,7 +22,6 @@ const Stars = ({ rating, max = 5 }) => {
     return <span className="stars-display">{stars}</span>
 }
 
-// Image carousel component
 const Carousel = ({ images }) => {
     const [activeIndex, setActiveIndex] = useState(0)
 
@@ -37,7 +35,7 @@ const Carousel = ({ images }) => {
 
     return (
         <div className="carousel">
-            {/* Main image */}
+            
             <div className="carousel-main">
                 {active ? (
                     <img src={active} alt={"Product image " + (activeIndex + 1)} />
@@ -57,7 +55,7 @@ const Carousel = ({ images }) => {
                 )}
             </div>
 
-            {/* Dot indicators */}
+            
             {images.length > 1 && (
                 <div className="carousel-dots">
                     {images.map((_, index) => (
@@ -72,7 +70,7 @@ const Carousel = ({ images }) => {
                 </div>
             )}
 
-            {/* Thumbnails */}
+            
             {images.length > 1 && (
                 <div className="carousel-thumbs">
                     {images.map((img, index) => {
@@ -165,7 +163,6 @@ const ProductDetails = () => {
     const avgRating = product.averageRating || 0
     const reviewCount = product.reviewCount || reviews.length
 
-    // Sort images: primary first
     const sortedImages = [...(product.images || [])].sort((a, b) => {
         if (a.isPrimary && !b.isPrimary) return -1
         if (!a.isPrimary && b.isPrimary) return 1
@@ -184,24 +181,24 @@ const ProductDetails = () => {
                 </Link>
             </div>
 
-            {/* Main layout */}
+            
             <div className="product-details-main">
-                {/* Left: Carousel */}
+                
                 <Carousel images={sortedImages} />
 
-                {/* Right: Info */}
+                
                 <div className="product-details-info">
-                    {/* Eyebrow */}
+                    
                     <div className="product-details-eyebrow">
                         <span>{product.category?.name || "Gear"}</span>
                         <span style={{ color: "var(--text-dim)" }}>·</span>
                         <span>{product.brand?.name || "No Brand"}</span>
                     </div>
 
-                    {/* Name */}
+                    
                     <h1 className="product-details-name">{product.name}</h1>
 
-                    {/* Rating */}
+                    
                     {avgRating > 0 && (
                         <div className="product-details-rating">
                             <Stars rating={avgRating} />
@@ -211,12 +208,12 @@ const ProductDetails = () => {
                         </div>
                     )}
 
-                    {/* Price */}
+                    
                     <div className="product-details-price">{formatPrice(product.price)}</div>
 
                     <div className="product-details-divider" />
 
-                    {/* Meta */}
+                    
                     <div className="product-details-meta">
                         <div className="detail-row">
                             <span className="detail-label">Category</span>
@@ -239,16 +236,16 @@ const ProductDetails = () => {
                         </div>
                     </div>
 
-                    {/* Messages */}
+                    
                     <div className="notification-slot">
                         <ErrorMessage message={error || cartError} />
                         {message && <p className="form-success">{message}</p>}
                     </div>
 
-                    {/* Actions */}
+                    
                     {product.stock > 0 && (
                         <div className="product-details-actions">
-                            {/* Quantity */}
+                            
                             <div className="quantity-control">
                                 <button
                                     type="button"
@@ -271,7 +268,7 @@ const ProductDetails = () => {
                                 </button>
                             </div>
 
-                            {/* Add to cart */}
+                            
                             <button
                                 type="button"
                                 className="primary-button"
@@ -290,14 +287,14 @@ const ProductDetails = () => {
                         </p>
                     )}
 
-                    {/* Description */}
+                    
                     {product.description && (
                         <p className="product-details-description">{product.description}</p>
                     )}
                 </div>
             </div>
 
-            {/* Reviews */}
+            
             <section className="product-reviews">
                 <h2 className="section-title">
                     Reviews {reviewCount > 0 ? "(" + reviewCount + ")" : ""}

@@ -126,7 +126,7 @@ const MyActivity = () => {
                 </p>
             )}
 
-            {/* Tabs */}
+            
             <div className="profile-tabs" style={{ marginBottom: "36px" }}>
                 <button
                     type="button"
@@ -154,7 +154,7 @@ const MyActivity = () => {
                 </button>
             </div>
 
-            {/* ---- Orders Tab ---- */}
+            
             {activeTab === "orders" && (
                 <div>
                     <ErrorMessage message={ordersError} />
@@ -200,7 +200,7 @@ const MyActivity = () => {
                                             <StatusBadge value={order.status} />
                                         </div>
 
-                                        {/* Items preview */}
+                                        
                                         <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
                                             {order.items.map((it) => (
                                                 <div key={it._id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "16px", fontSize: "17px" }}>
@@ -266,7 +266,7 @@ const MyActivity = () => {
                 </div>
             )}
 
-            {/* ---- Reviews Tab ---- */}
+            
             {activeTab === "reviews" && (
                 <div>
                     <ErrorMessage message={reviewsError} />
@@ -334,7 +334,7 @@ const MyActivity = () => {
                 </div>
             )}
 
-            {/* ---- Returns Tab ---- */}
+            
             {activeTab === "returns" && (
                 <div>
                     <ErrorMessage message={returnsError} />

@@ -206,7 +206,6 @@ const updateCurrentUser = async (req, res) => {
     }
 }
 
-
 const verifyPassword = async (req, res) => {
     try {
         const { password } = req.body || {}
@@ -232,7 +231,6 @@ const verifyPassword = async (req, res) => {
         sendError(res, error)
     }
 }
-
 
 const changePassword = async (req, res) => {
     try {

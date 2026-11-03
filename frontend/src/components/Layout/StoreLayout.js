@@ -31,12 +31,12 @@ const StoreLayout = () => {
     return (
         <div className="store-layout">
             <header className="store-header">
-                {/* Logo */}
+                
                 <Link to="/" className="store-brand" onClick={() => setMenuOpen(false)}>
                     <img src={fgpLogo} alt="FGP" />
                 </Link>
 
-                {/* Mobile Cart & Burger Toggle */}
+                
                 <div className="mobile-header-actions">
                     <Link to="/cart" className="cart-nav-btn cart-nav-btn--mobile" onClick={() => setMenuOpen(false)}>
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -70,9 +70,9 @@ const StoreLayout = () => {
                     </button>
                 </div>
 
-                {/* Nav & Header Right (Desktop contents / Mobile dropdown) */}
+                
                 <div className={`store-nav-wrapper ${menuOpen ? "store-nav-wrapper--open" : ""}`}>
-                    {/* Nav */}
+                    
                     <nav className="store-nav">
                         <NavLink
                             to="/categories"
@@ -101,9 +101,9 @@ const StoreLayout = () => {
                         )}
                     </nav>
 
-                    {/* Right side */}
+                    
                     <div className="store-header-right">
-                        {/* Cart (Desktop) */}
+                        
                         <Link to="/cart" className="cart-nav-btn cart-nav-btn--desktop" onClick={() => setMenuOpen(false)}>
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                                 <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
@@ -116,7 +116,7 @@ const StoreLayout = () => {
                             )}
                         </Link>
 
-                        {/* Admin button if user is admin */}
+                        
                         {user?.role === "admin" && (
                             <Link
                                 to="/admin"
@@ -128,7 +128,7 @@ const StoreLayout = () => {
                             </Link>
                         )}
 
-                        {/* Profile / Login */}
+                        
                         {isAuthenticated ? (
                             <NavLink
                                 to="/profile"
