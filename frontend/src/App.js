@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom"
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux"
 
 import { loadUser } from "./actions/authActions"
@@ -11,6 +11,7 @@ import StoreLayout from "./components/Layout/StoreLayout"
 // Auth pages
 import Login from "./pages/Login"
 import Register from "./pages/Register"
+import NotFound from "./pages/NotFound"
 
 // Store pages
 import Storefront from "./pages/store/Storefront"
@@ -88,6 +89,7 @@ const App = () => {
                     <Route path="orders" element={<ProtectedRoute><MyActivity /></ProtectedRoute>} />
                     <Route path="orders/:id" element={<ProtectedRoute><CustomerOrderDetails /></ProtectedRoute>} />
                     <Route path="profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+                    <Route path="*" element={<NotFound />} />
                 </Route>
 
                 {/* ---- Auth pages ---- */}
@@ -118,10 +120,8 @@ const App = () => {
                     <Route path="carts" element={<Carts />} />
                     <Route path="auth-identities" element={<AuthIdentities />} />
                     <Route path="profile" element={<AdminProfile />} />
+                    <Route path="*" element={<NotFound />} />
                 </Route>
-
-                {/* ---- Fallback ---- */}
-                <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
         </Router>
     )

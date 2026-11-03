@@ -1,4 +1,3 @@
-
 # ==========================================
 # Dependencies
 # ==========================================
@@ -10,6 +9,12 @@ node_modules/
 # ==========================================
 .env
 .env.*
+**/.env
+**/.env.*
+backend/.env
+backend/.env.*
+frontend/.env
+frontend/.env.*
 !.env.example
 !.env.sample
 **/render-env.txt
@@ -62,6 +67,7 @@ temp/
 *.sqlite3
 *.db
 uploads/
+**/uploads/
 
 # ==========================================
 # Testing and coverage
@@ -82,11 +88,10 @@ test-results/
 .netlify/
 
 # ==========================================
-# Local AI agent data (review before adding)
+# Local AI agent data
 # ==========================================
 .autoclaw/
 .claw/
 .zwork/
-
 prof-code/
 .tmp/

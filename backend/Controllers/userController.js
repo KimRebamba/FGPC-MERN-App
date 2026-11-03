@@ -49,9 +49,21 @@ const getUsers = async (req, res) => {
             filter.isDeactivated = false
         }
 
-        const users = await User.find(filter).sort({ createdAt: -1 })
+        const users = await User.find(filter).sort({ createdAt: -1 }).lean()
+        const userIds = users.map((u) => u._id)
+        const googleIdentities = await AuthIdentity.find({
+            user: { $in: userIds },
+            provider: "google",
+            deletedAt: null
+        }).lean()
+        const googleUserIds = new Set(googleIdentities.map((i) => String(i.user)))
 
-        res.status(200).json({ count: users.length, users })
+        const usersWithAuth = users.map((u) => ({
+            ...u,
+            isGoogleUser: googleUserIds.has(String(u._id))
+        }))
+
+        res.status(200).json({ count: usersWithAuth.length, users: usersWithAuth })
     } catch (error) {
         sendError(res, error)
     }
@@ -65,11 +77,19 @@ const getUser = async (req, res) => {
             return res.status(400).json({ error: "Invalid user id" })
         }
 
-        const user = await User.findOne({ _id: id, deletedAt: null })
+        const user = await User.findOne({ _id: id, deletedAt: null }).lean()
 
         if (!user) {
             return res.status(404).json({ error: "User not found" })
         }
+
+        const googleIdentity = await AuthIdentity.findOne({
+            user: user._id,
+            provider: "google",
+            deletedAt: null
+        }).lean()
+
+        user.isGoogleUser = Boolean(googleIdentity)
 
         res.status(200).json(user)
     } catch (error) {

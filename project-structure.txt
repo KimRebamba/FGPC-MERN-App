@@ -1,0 +1,236 @@
+================================================================================
+CONTROLLERS & FUNCTIONS
+================================================================================
+
+authController.js
+- register
+- login
+- googleLogin
+- getCurrentUser
+- updateCurrentUser
+- verifyPassword
+- changePassword
+- logout
+
+authIdentityController.js
+- getAuthIdentities
+- getAuthIdentity
+
+brandController.js
+- getBrands
+- getBrand
+- createBrand
+- updateBrand
+- deleteBrand
+
+cartController.js
+- getCarts
+- getCart
+- addCartItem
+- updateCartItemQuantity
+- removeCartItem
+- clearCart
+
+categoryController.js
+- getCategories
+- getCategory
+- createCategory
+- updateCategory
+- deleteCategory
+
+orderController.js
+- getOrders
+- getOrder
+- createOrder
+- updateOrderStatus
+- completeOrder
+- cancelOrder
+- deleteOrder
+
+productController.js
+- getProducts
+- getProduct
+- createProduct
+- updateProduct
+- deleteProduct
+
+returnRequestController.js
+- getReturnRequests
+- getReturnRequest
+- createReturnRequest
+- updateReturnRequest
+- cancelReturnRequest
+- deleteReturnRequest
+
+reviewController.js
+- getReviews
+- getReview
+- createReview
+- updateReview
+- deleteReview
+- addReviewReply
+- deleteReviewReply
+
+userController.js
+- getUsers
+- getUser
+- createUser
+- updateUser
+- deleteUser
+
+
+================================================================================
+ROUTES & API ENDPOINTS
+================================================================================
+
+authRoutes.js (/api/auth)
+- POST   /api/auth/register
+- POST   /api/auth/login
+- POST   /api/auth/google
+- POST   /api/auth/logout
+- GET    /api/auth/me
+- PATCH  /api/auth/me
+- POST   /api/auth/verify-password
+- PATCH  /api/auth/me/password
+
+authIdentityRoutes.js (/api/auth-identities)
+- GET    /api/auth-identities
+- GET    /api/auth-identities/:id
+
+brandRoutes.js (/api/brands)
+- GET    /api/brands
+- GET    /api/brands/:id
+- POST   /api/brands
+- PATCH  /api/brands/:id
+- DELETE /api/brands/:id
+
+cartRoutes.js (/api/carts)
+- GET    /api/carts
+- GET    /api/carts/:userId
+- POST   /api/carts/:userId/items
+- PATCH  /api/carts/:userId/items/:itemId
+- DELETE /api/carts/:userId/items/:itemId
+- DELETE /api/carts/:userId/items
+
+categoryRoutes.js (/api/categories)
+- GET    /api/categories
+- GET    /api/categories/:id
+- POST   /api/categories
+- PATCH  /api/categories/:id
+- DELETE /api/categories/:id
+
+orderRoutes.js (/api/orders)
+- POST   /api/orders
+- GET    /api/orders
+- GET    /api/orders/:id
+- PATCH  /api/orders/:id/complete
+- PATCH  /api/orders/:id/cancel
+- PATCH  /api/orders/:id/status
+
+productRoutes.js (/api/products)
+- GET    /api/products
+- GET    /api/products/:id
+- POST   /api/products
+- PATCH  /api/products/:id
+- DELETE /api/products/:id
+
+returnRequestRoutes.js (/api/return-requests)
+- POST   /api/return-requests
+- GET    /api/return-requests
+- GET    /api/return-requests/:id
+- PATCH  /api/return-requests/:id/cancel
+- PATCH  /api/return-requests/:id
+- DELETE /api/return-requests/:id
+
+reviewRoutes.js (/api/reviews)
+- GET    /api/reviews
+- GET    /api/reviews/:id
+- POST   /api/reviews
+- POST   /api/reviews/:id/replies
+- DELETE /api/reviews/:id/replies/:replyId
+- PATCH  /api/reviews/:id
+- DELETE /api/reviews/:id
+
+userRoutes.js (/api/users)
+- GET    /api/users
+- GET    /api/users/:id
+- POST   /api/users
+- PATCH  /api/users/:id
+- DELETE /api/users/:id
+
+
+================================================================================
+FRONTEND PAGES
+================================================================================
+
+Auth Pages:
+- Login.js
+- Register.js
+- NotFound.js
+
+Store Pages:
+- store/Storefront.js
+- store/Products.js
+- store/ProductDetails.js
+- store/Categories.js
+- store/Cart.js
+- store/Checkout.js
+- store/MyActivity.js
+- store/MyOrders.js
+- store/CustomerOrderDetails.js
+- store/Profile.js
+
+Admin Pages:
+- admin/Dashboard.js
+- admin/Products.js
+- admin/ProductCreate.js
+- admin/ProductEdit.js
+- admin/Categories.js
+- admin/Brands.js
+- admin/Orders.js
+- admin/OrderDetails.js
+- admin/ReturnRequests.js
+- admin/ReturnRequestDetails.js
+- admin/Reviews.js
+- admin/Users.js
+- admin/Carts.js
+- admin/AuthIdentities.js
+- admin/AdminProfile.js
+
+
+================================================================================
+FRONTEND COMPONENTS
+================================================================================
+
+Catalog:
+- Catalog/SimpleCatalogPage.js
+
+Form:
+- Form/FormField.js
+- Form/StatusBadge.js
+
+Layout:
+- Layout/StoreLayout.js
+- Layout/StoreFooter.js
+- Layout/AdminLayout.js
+- Layout/PageHeader.js
+- Layout/Loader.js
+- Layout/ErrorMessage.js
+
+Product:
+- Product/ProductCard.js
+- Product/ProductForm.js
+
+Review:
+- Review/ReviewForm.js
+- Review/ReviewList.js
+- Review/EditReviewModal.js
+
+Route:
+- Route/ProtectedRoute.js
+- Route/AdminRoute.js
+
+Table:
+- Table/DataTable.js
+- Table/DetailModal.js
+

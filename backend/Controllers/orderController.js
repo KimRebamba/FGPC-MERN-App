@@ -1,9 +1,55 @@
+const mongoose = require("mongoose")
 const Order = require("../Models/Order")
 const Product = require("../Models/Product")
 const Cart = require("../Models/Cart")
 const ReturnRequest = require("../Models/ReturnRequest")
 const { isValidId, sendError } = require("../utils/http")
 const { sendOrderTransactionEmail } = require("../utils/mailer")
+
+const shouldUseTransactions = () => {
+    return (
+        String(process.env.DEPLOY_TO_RENDER).toLowerCase() === "true" ||
+        Boolean(process.env.RENDER) ||
+        String(process.env.USE_MONGO_TRANSACTIONS).toLowerCase() === "true"
+    )
+}
+
+const withOptionalTransaction = async (workFn) => {
+    if (shouldUseTransactions()) {
+        let session = null
+        try {
+            session = await mongoose.startSession()
+            session.startTransaction()
+            const result = await workFn(session)
+            await session.commitTransaction()
+            return result
+        } catch (error) {
+            if (session) {
+                try {
+                    await session.abortTransaction()
+                } catch (_) { }
+            }
+
+            const isNoReplicaSetError =
+                error.message?.includes("replica set member") ||
+                error.message?.includes("Transaction numbers are only allowed") ||
+                error.codeName === "IllegalOperation"
+
+            if (isNoReplicaSetError) {
+                console.warn("[Database] Standalone MongoDB detected (no replica set). Falling back to standard execution.")
+                return await workFn(null)
+            }
+
+            throw error
+        } finally {
+            if (session) {
+                session.endSession()
+            }
+        }
+    }
+
+    return await workFn(null)
+}
 
 const statusTimestamps = {
     shipped: "shippedAt",
@@ -22,7 +68,7 @@ const getOrders = async (req, res) => {
         if (deleted === "true" || status === "deleted") {
             filter.deletedAt = { $ne: null }
         } else if (status === "all") {
-            // all
+
         } else {
             filter.deletedAt = null
         }
@@ -104,53 +150,87 @@ const createOrder = async (req, res) => {
             return res.status(400).json({ error: "Order must have at least one item" })
         }
 
-        const orderItems = []
+        const order = await withOptionalTransaction(async (session) => {
+            const sessionOpt = session ? { session } : {}
+            const orderItems = []
 
-        for (const item of items) {
-            if (!isValidId(item.product)) {
-                return res.status(400).json({ error: "Invalid product id" })
+            for (const item of items) {
+                if (!isValidId(item.product)) {
+                    const err = new Error("Invalid product id")
+                    err.statusCode = 400
+                    throw err
+                }
+
+                const quantity = Number(item.quantity)
+
+                if (!Number.isInteger(quantity) || quantity < 1) {
+                    const err = new Error("Quantity must be a positive whole number")
+                    err.statusCode = 400
+                    throw err
+                }
+
+                const product = await Product.findOne({ _id: item.product, deletedAt: null }, null, sessionOpt)
+
+                if (!product) {
+                    const err = new Error("Product not found")
+                    err.statusCode = 404
+                    throw err
+                }
+
+                if (!product.isActive) {
+                    const err = new Error(product.name + " is not available")
+                    err.statusCode = 400
+                    throw err
+                }
+
+                if (product.stock < quantity) {
+                    const err = new Error("Only " + product.stock + " left for " + product.name)
+                    err.statusCode = 400
+                    throw err
+                }
+
+                orderItems.push({
+                    product: product._id,
+                    productNameSnapshot: product.name,
+                    priceSnapshot: product.price,
+                    quantity
+                })
             }
 
-            const quantity = Number(item.quantity)
-
-            if (!Number.isInteger(quantity) || quantity < 1) {
-                return res.status(400).json({ error: "Quantity must be a positive whole number" })
+            let createdOrder
+            if (session) {
+                const [newOrder] = await Order.create([{
+                    user: targetUser,
+                    items: orderItems,
+                    paymentMethod,
+                    shippingAddressSnapshot
+                }], { session })
+                createdOrder = newOrder
+            } else {
+                createdOrder = await Order.create({
+                    user: targetUser,
+                    items: orderItems,
+                    paymentMethod,
+                    shippingAddressSnapshot
+                })
             }
 
-            const product = await Product.findOne({ _id: item.product, deletedAt: null })
-
-            if (!product) {
-                return res.status(404).json({ error: "Product not found" })
+            for (const item of orderItems) {
+                await Product.updateOne(
+                    { _id: item.product },
+                    { $inc: { stock: -item.quantity } },
+                    sessionOpt
+                )
             }
 
-            if (!product.isActive) {
-                return res.status(400).json({ error: product.name + " is not available" })
-            }
+            await Cart.updateOne(
+                { user: targetUser },
+                { $set: { items: [] } },
+                sessionOpt
+            )
 
-            if (product.stock < quantity) {
-                return res.status(400).json({ error: "Only " + product.stock + " left for " + product.name })
-            }
-
-            orderItems.push({
-                product: product._id,
-                productNameSnapshot: product.name,
-                priceSnapshot: product.price,
-                quantity
-            })
-        }
-
-        const order = await Order.create({
-            user: targetUser,
-            items: orderItems,
-            paymentMethod,
-            shippingAddressSnapshot
+            return createdOrder
         })
-
-        for (const item of orderItems) {
-            await Product.updateOne({ _id: item.product }, { $inc: { stock: -item.quantity } })
-        }
-
-        await Cart.updateOne({ user: targetUser }, { $set: { items: [] } })
 
         sendOrderTransactionEmail(order, "Your order has been placed successfully and is pending confirmation.").catch(console.error)
 
@@ -257,35 +337,51 @@ const cancelOrder = async (req, res) => {
             return res.status(400).json({ error: "Invalid order id" })
         }
 
-        const order = await Order.findOne({ _id: id, deletedAt: null })
-        if (!order) {
-            return res.status(404).json({ error: "Order not found" })
-        }
+        const cancelledOrder = await withOptionalTransaction(async (session) => {
+            const sessionOpt = session ? { session } : {}
+            const order = await Order.findOne({ _id: id, deletedAt: null }, null, sessionOpt)
 
-        const isOwner = String(order.user) === String(req.user._id)
-        const isAdmin = req.user.role === "admin"
-        if (!isAdmin && !isOwner) {
-            return res.status(403).json({ error: "This order belongs to another account" })
-        }
-
-        if (order.status !== "pending") {
-            return res.status(400).json({ error: "Orders can only be cancelled while in pending status." })
-        }
-
-        order.status = "cancelled"
-        order.cancelledAt = new Date()
-        await order.save()
-
-        // Restore product inventory
-        for (const item of order.items) {
-            if (item.product) {
-                await Product.updateOne({ _id: item.product }, { $inc: { stock: item.quantity } })
+            if (!order) {
+                const err = new Error("Order not found")
+                err.statusCode = 404
+                throw err
             }
-        }
 
-        sendOrderTransactionEmail(order, "Your order transaction has been cancelled.").catch(console.error)
+            const isOwner = String(order.user) === String(req.user._id)
+            const isAdmin = req.user.role === "admin"
+            if (!isAdmin && !isOwner) {
+                const err = new Error("This order belongs to another account")
+                err.statusCode = 403
+                throw err
+            }
 
-        res.status(200).json({ message: "Order cancelled successfully", order })
+            if (order.status !== "pending") {
+                const err = new Error("Orders can only be cancelled while in pending status.")
+                err.statusCode = 400
+                throw err
+            }
+
+            order.status = "cancelled"
+            order.cancelledAt = new Date()
+            await order.save(sessionOpt)
+
+            // Restore product inventory within transaction
+            for (const item of order.items) {
+                if (item.product) {
+                    await Product.updateOne(
+                        { _id: item.product },
+                        { $inc: { stock: item.quantity } },
+                        sessionOpt
+                    )
+                }
+            }
+
+            return order
+        })
+
+        sendOrderTransactionEmail(cancelledOrder, "Your order transaction has been cancelled.").catch(console.error)
+
+        res.status(200).json({ message: "Order cancelled successfully", order: cancelledOrder })
     } catch (error) {
         sendError(res, error)
     }

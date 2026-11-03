@@ -206,7 +206,7 @@ const updateCurrentUser = async (req, res) => {
     }
 }
 
-// Verify current password (for the "change password" two-step flow)
+
 const verifyPassword = async (req, res) => {
     try {
         const { password } = req.body || {}
@@ -233,7 +233,7 @@ const verifyPassword = async (req, res) => {
     }
 }
 
-// Change password (requires having verified old password first via the frontend flow)
+
 const changePassword = async (req, res) => {
     try {
         const { password } = req.body || {}
